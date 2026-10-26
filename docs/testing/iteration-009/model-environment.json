@@ -1,0 +1,39 @@
+{
+  "observed": "during Iteration 009 live benchmark, 2026-10-26",
+  "python": "3.12.15",
+  "architecture": "arm64",
+  "crewai": "1.15.30",
+  "openai_sdk": "2.54.0",
+  "ollama_version": "0.40.11",
+  "model": "llama3.2:3b",
+  "model_digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+  "model_details": {
+    "parent_model": "",
+    "format": "gguf",
+    "family": "llama",
+    "families": [
+      "llama"
+    ],
+    "parameter_size": "3.2B",
+    "quantization_level": "Q4_K_M"
+  },
+  "capabilities": [
+    "completion",
+    "tools"
+  ],
+  "provider_parameters": {
+    "temperature": 0,
+    "timeout_seconds": 90,
+    "max_tokens": 2500
+  },
+  "application_files_sha256": {
+    "backend/app/providers/models.py": "67b47d56402894b7abe81bb4f0eb9c552b1585907cef04ca3e281af1c11a1052",
+    "backend/app/agents/config/agents.yaml": "39f8cf9f31d167579a98553baeeb6d1f87a19caeb67a6d7db92b876a20113395",
+    "backend/app/agents/config/tasks.yaml": "9a744d87003fd471a547172f05921b46f8fd952786011af2b3652634fe64e277",
+    "backend/app/agents/crews/investigation.py": "dd20b2bc4b78cf776bf438c7bafffc32d85daa59493ce1c3e20ac283d9f658d7",
+    "backend/app/flows/reconciliation.py": "3dd997ac2e1e334201986193dce06f7cc331051c1498d8e3ec5083a5a555ac5c",
+    "backend/app/agents/tasks/validation.py": "072e5b0b01220f753e3bc027f36cd1a31458177b4cfbaf2478992d6bec08e3c8",
+    "backend/app/services/workflows.py": "03a10cfea722f9451c65041ddba3350aa1fffa76f6bf8b9b905044fa7c1be4b6"
+  },
+  "hosted_requests": false
+}

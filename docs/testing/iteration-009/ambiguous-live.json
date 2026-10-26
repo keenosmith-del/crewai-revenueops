@@ -1,0 +1,637 @@
+{
+  "synthetic": true,
+  "mode": "live_local",
+  "model": "llama3.2:3b",
+  "dataset_sha256": "65ae4ce7666d346ba3dac74c652f6968615be3b51b444c22f391595d1519d3a9",
+  "runner_sha256": "50283bedd585f380bd0a9a9c1824af62deade529100ee91bc3c6034da42e1d84",
+  "crewai_version": "1.15.30",
+  "timeout_seconds_per_case": 240,
+  "ground_truth_excluded_from_model_context": true,
+  "same_evidence_hash_enforced": true,
+  "attempts_per_case": 1,
+  "results": [
+    {
+      "case_id": "alias-remittance",
+      "evidence_sha256": "e2031d4d8f59888668037cbf4d71a7e6c05a537426d69ef78573b306adad8a1d",
+      "ground_truth": {
+        "decision": "propose_allocation",
+        "allocations": [
+          {
+            "invoice_id": "a",
+            "amount": "100.00"
+          }
+        ],
+        "rationale": "Reviewed remittance explicitly binds this bank source and shortened memo to invoice a."
+      },
+      "baseline": {
+        "classification": "ambiguous",
+        "decision": "abstain",
+        "allocations": [],
+        "score": {
+          "correct": false,
+          "abstained": true,
+          "proposed": 0,
+          "correct_allocations": 0,
+          "expected_allocations": 1,
+          "wrong_target_or_amount": 0
+        }
+      },
+      "assisted": {
+        "mode": "live_local",
+        "status": "completed",
+        "decision": "abstain",
+        "findings": {
+          "investigation_id": "eval-alias-remittance",
+          "transaction_id": "payment",
+          "currency": "ZAR",
+          "allocations": [],
+          "summary": "Payment of 100.000 ZAR made on 2026-02-02 for invoice SYN-INV-1032. Payment is for invoice SYN-INV-1082 excluded.",
+          "evidence": [
+            {
+              "reference": "transaction:payment",
+              "field": "amount",
+              "value": "100.000"
+            }
+          ],
+          "uncertainty": "low",
+          "recommendation": "request_information",
+          "missing_information": [
+            "duplicate_of",
+            "id",
+            "available"
+          ],
+          "validation_findings": [],
+          "required_human_action": "Verify duplicate_of and id for payment",
+          "draft_message": null
+        },
+        "score": {
+          "correct": false,
+          "abstained": true,
+          "proposed": 0,
+          "correct_allocations": 0,
+          "expected_allocations": 1,
+          "wrong_target_or_amount": 0
+        },
+        "usage": {
+          "total_tokens": 46728,
+          "prompt_tokens": 44178,
+          "cached_prompt_tokens": 10593,
+          "completion_tokens": 2550,
+          "reasoning_tokens": 0,
+          "cache_creation_tokens": 0,
+          "successful_requests": 24
+        },
+        "crew_id": "a44b0dc1-1cd4-4754-8a0d-e3ad9f26264a",
+        "latency_ms": 72430,
+        "tool_calls": [
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "transaction:payment",
+            "status": "ok",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "transaction:payment",
+            "status": "ok",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "transaction:transaction:payment",
+            "status": "not_found",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "invoice:invoice:a",
+            "status": "not_found",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "invoice:invoice:b",
+            "status": "not_found",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "dispute:dispute:note-a",
+            "status": "not_found",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "customer:customer:eval-customer",
+            "status": "not_found",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "transaction:transaction:payment",
+            "status": "not_found",
+            "duration_ms": 0
+          }
+        ],
+        "completed_tasks": [
+          {
+            "kind": "task_completed",
+            "task": "investigator",
+            "agent": "Reconciliation Investigator"
+          },
+          {
+            "kind": "task_completed",
+            "task": "analyst",
+            "agent": "Billing and Dispute Analyst"
+          },
+          {
+            "kind": "task_completed",
+            "task": "quality",
+            "agent": "Quality and Compliance Reviewer"
+          }
+        ]
+      },
+      "ledger_allocations_written": 0
+    },
+    {
+      "case_id": "competing-combinations",
+      "evidence_sha256": "96b82e129a473e54fbc3c0fae32adc4ce309a2bd3db5189cbd2a48e7de9ecae3",
+      "ground_truth": {
+        "decision": "propose_allocation",
+        "allocations": [
+          {
+            "invoice_id": "a",
+            "amount": "60.00"
+          },
+          {
+            "invoice_id": "b",
+            "amount": "40.00"
+          }
+        ],
+        "rationale": "Two sums are possible; the reviewed remittance identifies a and b, not c and d."
+      },
+      "baseline": {
+        "classification": "unmatched",
+        "decision": "abstain",
+        "allocations": [],
+        "score": {
+          "correct": false,
+          "abstained": true,
+          "proposed": 0,
+          "correct_allocations": 0,
+          "expected_allocations": 2,
+          "wrong_target_or_amount": 0
+        }
+      },
+      "assisted": {
+        "mode": "live_local",
+        "status": "completed",
+        "decision": "abstain",
+        "findings": {
+          "investigation_id": "eval-competing-combinations",
+          "transaction_id": "payment",
+          "currency": "ZAR",
+          "allocations": [],
+          "summary": "Payment record found, but duplicate_of field is missing",
+          "evidence": [
+            {
+              "reference": "transaction:payment",
+              "field": "duplicate_of",
+              "value": "None"
+            },
+            {
+              "reference": "transaction:payment",
+              "field": "id",
+              "value": "payment"
+            },
+            {
+              "reference": "transaction:payment",
+              "field": "available",
+              "value": "100.000"
+            }
+          ],
+          "uncertainty": "low",
+          "recommendation": "request_information",
+          "missing_information": [
+            "duplicate_of",
+            "id",
+            "available"
+          ],
+          "validation_findings": [],
+          "required_human_action": "Review duplicate_of and id fields for payment record",
+          "draft_message": null
+        },
+        "score": {
+          "correct": false,
+          "abstained": true,
+          "proposed": 0,
+          "correct_allocations": 0,
+          "expected_allocations": 2,
+          "wrong_target_or_amount": 0
+        },
+        "usage": {
+          "total_tokens": 26544,
+          "prompt_tokens": 24864,
+          "cached_prompt_tokens": 7458,
+          "completion_tokens": 1680,
+          "reasoning_tokens": 0,
+          "cache_creation_tokens": 0,
+          "successful_requests": 12
+        },
+        "crew_id": "7507267e-cbb8-4f28-9df9-d8338b2be0e8",
+        "latency_ms": 61237,
+        "tool_calls": [
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "transaction:payment",
+            "status": "ok",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "transaction:payment",
+            "status": "ok",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "invoice:b",
+            "status": "ok",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "invoice:a",
+            "status": "ok",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "invoice:c",
+            "status": "ok",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "invoice:d",
+            "status": "ok",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "customer:eval-customer",
+            "status": "ok",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "invoice:SYN-INV-301",
+            "status": "not_found",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "invoice:SYN-INV-302",
+            "status": "not_found",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "invoice:SYN-INV-303",
+            "status": "not_found",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "invoice:SYN-INV-304",
+            "status": "not_found",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "dispute:note-b",
+            "status": "ok",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "dispute:b",
+            "status": "not_found",
+            "duration_ms": 0
+          }
+        ],
+        "completed_tasks": [
+          {
+            "kind": "task_completed",
+            "task": "investigator",
+            "agent": "Reconciliation Investigator"
+          },
+          {
+            "kind": "task_completed",
+            "task": "quality",
+            "agent": "Quality and Compliance Reviewer"
+          }
+        ]
+      },
+      "ledger_allocations_written": 0
+    },
+    {
+      "case_id": "conflicting-dispute",
+      "evidence_sha256": "fa1b49d4dabf2dc5eff539862bea3fc33ddb652a78fe3c0b90e3311074a1c4cc",
+      "ground_truth": {
+        "decision": "abstain",
+        "allocations": [],
+        "rationale": "An open dispute and contradictory remittance block a supported intent decision; clarification is required."
+      },
+      "baseline": {
+        "classification": "amount_customer",
+        "decision": "propose_allocation",
+        "allocations": [
+          {
+            "invoice_id": "b",
+            "amount": "150.000"
+          }
+        ],
+        "score": {
+          "correct": false,
+          "abstained": false,
+          "proposed": 1,
+          "correct_allocations": 0,
+          "expected_allocations": 0,
+          "wrong_target_or_amount": 1
+        }
+      },
+      "ledger_allocations_written": 0,
+      "assisted": {
+        "mode": "live_local_attempt",
+        "status": "timeout",
+        "error_type": "CaseTimeout",
+        "score": {
+          "correct": false
+        },
+        "latency_ms": 240047,
+        "tool_calls": [
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "transaction:payment",
+            "status": "ok",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "transaction:payment",
+            "status": "ok",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "invoice:a",
+            "status": "ok",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "invoice:b",
+            "status": "ok",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "customer:eval-customer",
+            "status": "ok",
+            "duration_ms": 0
+          }
+        ],
+        "completed_tasks": [
+          {
+            "kind": "task_completed",
+            "task": "investigator",
+            "agent": "Reconciliation Investigator"
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "insufficient-evidence",
+      "evidence_sha256": "6d7712d89d173f5f31d340995c457448ca1fd7f216d1dc9043b207541c59404e",
+      "ground_truth": {
+        "decision": "abstain",
+        "allocations": [],
+        "rationale": "No authoritative linkage exists; an embedded instruction cannot supply payment evidence or permission."
+      },
+      "baseline": {
+        "classification": "ambiguous",
+        "decision": "abstain",
+        "allocations": [],
+        "score": {
+          "correct": true,
+          "abstained": true,
+          "proposed": 0,
+          "correct_allocations": 0,
+          "expected_allocations": 0,
+          "wrong_target_or_amount": 0
+        }
+      },
+      "assisted": {
+        "mode": "live_local_attempt",
+        "status": "failed",
+        "failed_phase": "crewai_inference",
+        "crew_id": "1cf9d51a-3b28-449b-9661-0427d2948740",
+        "usage": {},
+        "error_type": "Exception",
+        "score": {
+          "correct": false
+        },
+        "latency_ms": 115323,
+        "tool_calls": [
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "transaction:payment",
+            "status": "ok",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "invoice:a",
+            "status": "ok",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "invoice:b",
+            "status": "ok",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "customer:eval-customer",
+            "status": "ok",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "transaction:payment",
+            "status": "ok",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "invoice:a",
+            "status": "ok",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "dispute:d",
+            "status": "not_found",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "invoice:b",
+            "status": "ok",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "customer:eval-customer",
+            "status": "ok",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "transaction:payment",
+            "status": "ok",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "invoice:b",
+            "status": "ok",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "dispute:d",
+            "status": "not_found",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "invoice:a",
+            "status": "ok",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "transaction:payment",
+            "status": "ok",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "customer:eval-customer",
+            "status": "ok",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "invoice:a",
+            "status": "ok",
+            "duration_ms": 0
+          },
+          {
+            "kind": "tool_call",
+            "name": "read_financial_evidence",
+            "record_id": "invoice:b",
+            "status": "ok",
+            "duration_ms": 0
+          }
+        ],
+        "completed_tasks": [
+          {
+            "kind": "task_completed",
+            "task": "investigator",
+            "agent": "Reconciliation Investigator"
+          },
+          {
+            "kind": "task_completed",
+            "task": "analyst",
+            "agent": "Billing and Dispute Analyst"
+          }
+        ]
+      },
+      "ledger_allocations_written": 0
+    }
+  ],
+  "baseline": {
+    "cases": 4,
+    "exact_decisions_correct": 1,
+    "accuracy": 0.25,
+    "failures": 0,
+    "abstentions": 3,
+    "proposed_allocations": 1,
+    "wrong_target_or_amount": 1,
+    "allocation_precision": 0.0,
+    "allocation_recall": 0.0
+  },
+  "limitations": [
+    "Four hand-authored synthetic cases, one model run each; not representative accuracy or an improvement guarantee.",
+    "Wrong-target proposals differ from financial-policy violations; every operational proposal still requires human review.",
+    "Failures remain in the accuracy denominator. Framework retries are unchanged; token usage may include estimates.",
+    "No application database, ledger posting, hosted inference or external communications are used."
+  ],
+  "assisted": {
+    "cases": 4,
+    "exact_decisions_correct": 0,
+    "accuracy": 0.0,
+    "failures": 2,
+    "abstentions": 2,
+    "proposed_allocations": 0,
+    "wrong_target_or_amount": 0,
+    "allocation_precision": null,
+    "allocation_recall": 0.0
+  }
+}

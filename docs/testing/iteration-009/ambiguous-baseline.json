@@ -1,0 +1,142 @@
+{
+  "synthetic": true,
+  "mode": "deterministic_baseline",
+  "model": null,
+  "dataset_sha256": "65ae4ce7666d346ba3dac74c652f6968615be3b51b444c22f391595d1519d3a9",
+  "runner_sha256": "50283bedd585f380bd0a9a9c1824af62deade529100ee91bc3c6034da42e1d84",
+  "crewai_version": "1.15.30",
+  "timeout_seconds_per_case": null,
+  "ground_truth_excluded_from_model_context": true,
+  "same_evidence_hash_enforced": true,
+  "attempts_per_case": 1,
+  "results": [
+    {
+      "case_id": "alias-remittance",
+      "evidence_sha256": "e2031d4d8f59888668037cbf4d71a7e6c05a537426d69ef78573b306adad8a1d",
+      "ground_truth": {
+        "decision": "propose_allocation",
+        "allocations": [
+          {
+            "invoice_id": "a",
+            "amount": "100.00"
+          }
+        ],
+        "rationale": "Reviewed remittance explicitly binds this bank source and shortened memo to invoice a."
+      },
+      "baseline": {
+        "classification": "ambiguous",
+        "decision": "abstain",
+        "allocations": [],
+        "score": {
+          "correct": false,
+          "abstained": true,
+          "proposed": 0,
+          "correct_allocations": 0,
+          "expected_allocations": 1,
+          "wrong_target_or_amount": 0
+        }
+      },
+      "ledger_allocations_written": 0
+    },
+    {
+      "case_id": "competing-combinations",
+      "evidence_sha256": "96b82e129a473e54fbc3c0fae32adc4ce309a2bd3db5189cbd2a48e7de9ecae3",
+      "ground_truth": {
+        "decision": "propose_allocation",
+        "allocations": [
+          {
+            "invoice_id": "a",
+            "amount": "60.00"
+          },
+          {
+            "invoice_id": "b",
+            "amount": "40.00"
+          }
+        ],
+        "rationale": "Two sums are possible; the reviewed remittance identifies a and b, not c and d."
+      },
+      "baseline": {
+        "classification": "unmatched",
+        "decision": "abstain",
+        "allocations": [],
+        "score": {
+          "correct": false,
+          "abstained": true,
+          "proposed": 0,
+          "correct_allocations": 0,
+          "expected_allocations": 2,
+          "wrong_target_or_amount": 0
+        }
+      },
+      "ledger_allocations_written": 0
+    },
+    {
+      "case_id": "conflicting-dispute",
+      "evidence_sha256": "fa1b49d4dabf2dc5eff539862bea3fc33ddb652a78fe3c0b90e3311074a1c4cc",
+      "ground_truth": {
+        "decision": "abstain",
+        "allocations": [],
+        "rationale": "An open dispute and contradictory remittance block a supported intent decision; clarification is required."
+      },
+      "baseline": {
+        "classification": "amount_customer",
+        "decision": "propose_allocation",
+        "allocations": [
+          {
+            "invoice_id": "b",
+            "amount": "150.000"
+          }
+        ],
+        "score": {
+          "correct": false,
+          "abstained": false,
+          "proposed": 1,
+          "correct_allocations": 0,
+          "expected_allocations": 0,
+          "wrong_target_or_amount": 1
+        }
+      },
+      "ledger_allocations_written": 0
+    },
+    {
+      "case_id": "insufficient-evidence",
+      "evidence_sha256": "6d7712d89d173f5f31d340995c457448ca1fd7f216d1dc9043b207541c59404e",
+      "ground_truth": {
+        "decision": "abstain",
+        "allocations": [],
+        "rationale": "No authoritative linkage exists; an embedded instruction cannot supply payment evidence or permission."
+      },
+      "baseline": {
+        "classification": "ambiguous",
+        "decision": "abstain",
+        "allocations": [],
+        "score": {
+          "correct": true,
+          "abstained": true,
+          "proposed": 0,
+          "correct_allocations": 0,
+          "expected_allocations": 0,
+          "wrong_target_or_amount": 0
+        }
+      },
+      "ledger_allocations_written": 0
+    }
+  ],
+  "baseline": {
+    "cases": 4,
+    "exact_decisions_correct": 1,
+    "accuracy": 0.25,
+    "failures": 0,
+    "abstentions": 3,
+    "proposed_allocations": 1,
+    "wrong_target_or_amount": 1,
+    "allocation_precision": 0.0,
+    "allocation_recall": 0.0
+  },
+  "limitations": [
+    "Four hand-authored synthetic cases, one model run each; not representative accuracy or an improvement guarantee.",
+    "Wrong-target proposals differ from financial-policy violations; every operational proposal still requires human review.",
+    "Failures remain in the accuracy denominator. Framework retries are unchanged; token usage may include estimates.",
+    "No application database, ledger posting, hosted inference or external communications are used."
+  ]
+}
