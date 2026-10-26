@@ -1,0 +1,103 @@
+{
+  "source_sha256": "c5d1e239c7c01e503d3c7bbd56d124806e63392cad690ea835f67ac5747bf735",
+  "cases": [
+    {
+      "case_id": "alias-remittance",
+      "status": "completed",
+      "calls": 8,
+      "statuses": {
+        "ok": 2,
+        "not_found": 6
+      },
+      "record_ids": {
+        "transaction:payment": 2,
+        "transaction:transaction:payment": 2,
+        "invoice:invoice:a": 1,
+        "invoice:invoice:b": 1,
+        "dispute:dispute:note-a": 1,
+        "customer:customer:eval-customer": 1
+      },
+      "usage": {
+        "total_tokens": 46728,
+        "prompt_tokens": 44178,
+        "cached_prompt_tokens": 10593,
+        "completion_tokens": 2550,
+        "reasoning_tokens": 0,
+        "cache_creation_tokens": 0,
+        "successful_requests": 24
+      },
+      "latency_ms": 72430,
+      "error_type": null
+    },
+    {
+      "case_id": "competing-combinations",
+      "status": "completed",
+      "calls": 13,
+      "statuses": {
+        "ok": 8,
+        "not_found": 5
+      },
+      "record_ids": {
+        "transaction:payment": 2,
+        "invoice:b": 1,
+        "invoice:a": 1,
+        "invoice:c": 1,
+        "invoice:d": 1,
+        "customer:eval-customer": 1,
+        "invoice:SYN-INV-301": 1,
+        "invoice:SYN-INV-302": 1,
+        "invoice:SYN-INV-303": 1,
+        "invoice:SYN-INV-304": 1,
+        "dispute:note-b": 1,
+        "dispute:b": 1
+      },
+      "usage": {
+        "total_tokens": 26544,
+        "prompt_tokens": 24864,
+        "cached_prompt_tokens": 7458,
+        "completion_tokens": 1680,
+        "reasoning_tokens": 0,
+        "cache_creation_tokens": 0,
+        "successful_requests": 12
+      },
+      "latency_ms": 61237,
+      "error_type": null
+    },
+    {
+      "case_id": "conflicting-dispute",
+      "status": "timeout",
+      "calls": 5,
+      "statuses": {
+        "ok": 5
+      },
+      "record_ids": {
+        "transaction:payment": 2,
+        "invoice:a": 1,
+        "invoice:b": 1,
+        "customer:eval-customer": 1
+      },
+      "usage": null,
+      "latency_ms": 240047,
+      "error_type": "CaseTimeout"
+    },
+    {
+      "case_id": "insufficient-evidence",
+      "status": "failed",
+      "calls": 17,
+      "statuses": {
+        "ok": 15,
+        "not_found": 2
+      },
+      "record_ids": {
+        "transaction:payment": 4,
+        "invoice:a": 4,
+        "invoice:b": 4,
+        "customer:eval-customer": 3,
+        "dispute:d": 2
+      },
+      "usage": null,
+      "latency_ms": 115323,
+      "error_type": "Exception"
+    }
+  ]
+}
