@@ -146,7 +146,7 @@ def review(db, user, case_id, decision, note, key, allocations=None):
     return result
 
 
-def enqueue(db, user, case_id, mode, model):
+def enqueue(db, user, case_id, mode, model, purpose="investigation"):
     case = get(db, Investigation, case_id, user.org_id, lock=True)
     if case.status not in ("human_review", "needs_information", "rejected", "failed"):
         raise HTTPException(409, "Case already running or terminal")
@@ -154,6 +154,7 @@ def enqueue(db, user, case_id, mode, model):
         org_id=user.org_id,
         investigation_id=case.id,
         mode=mode,
+        checkpoint={"actor_id": user.id, "purpose": purpose},
         model=model,
         status="not_executed" if mode == "baseline" else "queued",
         stage="not_executed" if mode == "baseline" else "queued",

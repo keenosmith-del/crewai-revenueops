@@ -300,3 +300,29 @@ def detail(resource: str, record_id: str, db=Depends(get_db), user=Depends(curre
                     if getattr(r, foreign_key) == record.id
                 ]
     return result
+
+
+@router.post("/investigations/{case_id}/collections-run")
+def collection_run(case_id: str, db=Depends(get_db), user=Depends(operator)):
+    if settings.model_mode == "hosted" and not settings.hosted_enabled:
+        raise HTTPException(403, "Hosted inference is not authorised")
+    return serialize(
+        workflows.enqueue(
+            db,
+            user,
+            case_id,
+            settings.model_mode,
+            settings.ollama_model if settings.model_mode == "ollama" else settings.hosted_model,
+            purpose="collections",
+        )
+    )
+
+
+@router.get("/integrations/model-health")
+def model_health(user=Depends(current_user)):
+    from app.providers.models import health
+
+    try:
+        return health()
+    except Exception:
+        raise HTTPException(503, "Model unavailable or required capabilities absent") from None

@@ -1,0 +1,4 @@
+investigator: Investigate the scoped transaction. Use evidence tools. Propose a permitted allocation only if supported, otherwise request information. Explain uncertainty.
+analyst: Review the investigator's findings in context. Inspect disputes and contradictory evidence. Revise or escalate; do not trust agent agreement.
+collections: Review overdue, undisputed invoice evidence. Produce a respectful draft only for eligible balances, otherwise request information. Do not send it.
+quality: Review all preceding task outputs and cited evidence. Return a complete corrected final recommendation, retaining uncertainty and required human approval.
