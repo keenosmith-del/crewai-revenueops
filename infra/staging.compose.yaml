@@ -1,0 +1,24 @@
+# Existing VM only. Bootstrap a private PostgreSQL, HTTPS ingress and secrets separately.
+name: revenueops-staging
+services:
+  api:
+    image: ${API_IMAGE:?immutable API digest required}
+    env_file: /opt/revenueops/staging/runtime.env
+    restart: unless-stopped
+    ports: ['127.0.0.1:5050:5050']
+    healthcheck:
+      test: ['CMD', 'python', '-c', "import urllib.request; urllib.request.urlopen('http://localhost:5050/health')"]
+      interval: 10s
+      retries: 12
+  worker:
+    image: ${API_IMAGE:?immutable API digest required}
+    env_file: /opt/revenueops/staging/runtime.env
+    command: ['python', '-m', 'app.workers.runner']
+    restart: unless-stopped
+    depends_on:
+      api: {condition: service_healthy}
+  web:
+    image: ${WEB_IMAGE:?immutable web digest required}
+    restart: unless-stopped
+    ports: ['127.0.0.1:8080:8080']
+    depends_on: [api]

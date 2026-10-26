@@ -1,0 +1,128 @@
+name: Deploy existing staging (manual)
+on:
+  workflow_dispatch:
+    inputs:
+      release_sha: {description: 'Full main SHA with successful Verify RevenueOps CI', required: true, type: string}
+      operation: {description: 'Promote or restore a reviewed digest pair', required: true, type: choice, options: [deploy, rollback], default: deploy}
+      confirmation: {description: 'Type DEPLOY STAGING', required: true, type: string}
+      schema_compatible: {description: 'Backup and schema compatibility reviewed', required: true, type: boolean, default: false}
+      api_digest: {description: 'Rollback API sha256 digest only', type: string}
+      web_digest: {description: 'Rollback web sha256 digest only', type: string}
+permissions: {contents: read, actions: read}
+concurrency: {group: revenueops-staging-release, cancel-in-progress: false}
+jobs:
+  preflight:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ github.token }}
+      RELEASE_SHA: ${{ inputs.release_sha }}
+      CONFIRMATION: ${{ inputs.confirmation }}
+      SCHEMA_COMPATIBLE: ${{ inputs.schema_compatible }}
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0, persist-credentials: false}
+      - run: python scripts/release_guard.py
+  staging:
+    needs: preflight
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    environment: {name: staging, url: '${{ vars.STAGING_URL }}'}
+    permissions: {contents: read, actions: read, packages: write}
+    env:
+      GH_TOKEN: ${{ github.token }}
+      RELEASE_SHA: ${{ inputs.release_sha }}
+      CONFIRMATION: ${{ inputs.confirmation }}
+      SCHEMA_COMPATIBLE: ${{ inputs.schema_compatible }}
+      OPERATION: ${{ inputs.operation }}
+      API_DIGEST: ${{ inputs.api_digest }}
+      WEB_DIGEST: ${{ inputs.web_digest }}
+      STAGING_ENABLED: ${{ vars.STAGING_ENABLED }}
+      STAGING_HOST: ${{ vars.STAGING_HOST }}
+      STAGING_USER: ${{ vars.STAGING_USER }}
+      STAGING_URL: ${{ vars.STAGING_URL }}
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0, persist-credentials: false}
+      - run: python scripts/release_guard.py approved
+      - name: Require existing target and pinned SSH host identity
+        env:
+          SSH_KEY: ${{ secrets.STAGING_SSH_KEY }}
+          SSH_HOST_KEYS: ${{ secrets.STAGING_KNOWN_HOSTS }}
+        run: |
+          python - <<'PY'
+          import os, pathlib, re
+          assert os.environ['STAGING_ENABLED'] == 'true'
+          assert re.fullmatch(r'[a-zA-Z0-9.-]+', os.environ['STAGING_HOST'])
+          assert re.fullmatch(r'[a-zA-Z0-9_-]+', os.environ['STAGING_USER'])
+          assert os.environ['STAGING_URL'].startswith('https://')
+          assert os.environ['SSH_KEY'] and os.environ['SSH_HOST_KEYS']
+          root=pathlib.Path.home()/'.ssh'; root.mkdir(mode=0o700,exist_ok=True)
+          key=root/'id_ed25519';key.write_text(os.environ['SSH_KEY']);key.chmod(0o600)
+          (root/'known_hosts').write_text(os.environ['SSH_HOST_KEYS'])
+          PY
+      - name: Capture rollback pair before building or promotion
+        run: ssh -o BatchMode=yes -o StrictHostKeyChecking=yes "$STAGING_USER@$STAGING_HOST" 'python3 /opt/revenueops/staging/staging_host.py snapshot' > staging-before.json
+      - uses: actions/upload-artifact@v4
+        with: {name: staging-before, path: staging-before.json, if-no-files-found: error}
+      - uses: docker/login-action@v3
+        if: inputs.operation == 'deploy'
+        with: {registry: ghcr.io, username: '${{ github.actor }}', password: '${{ secrets.GITHUB_TOKEN }}'}
+      - uses: actions/checkout@v4
+        if: inputs.operation == 'deploy'
+        with: {ref: '${{ inputs.release_sha }}', path: release, persist-credentials: false}
+      - uses: docker/build-push-action@v6
+        id: api
+        if: inputs.operation == 'deploy'
+        with:
+          context: release
+          file: release/backend/Dockerfile
+          push: true
+          platforms: linux/amd64
+          tags: ghcr.io/keenosmith-del/crewai-revenueops-api:${{ inputs.release_sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          labels: org.opencontainers.image.revision=${{ inputs.release_sha }}
+      - uses: docker/build-push-action@v6
+        id: web
+        if: inputs.operation == 'deploy'
+        with:
+          context: release/frontend
+          push: true
+          platforms: linux/amd64
+          tags: ghcr.io/keenosmith-del/crewai-revenueops-web:${{ inputs.release_sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          labels: org.opencontainers.image.revision=${{ inputs.release_sha }}
+      - name: Validate manifest and promote digest references
+        env:
+          BUILT_API: ${{ steps.api.outputs.digest }}
+          BUILT_WEB: ${{ steps.web.outputs.digest }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from scripts.staging_host import validate_manifest
+          baseline=json.load(open('staging-before.json'))
+          api=os.environ['BUILT_API'] if os.environ['OPERATION']=='deploy' else os.environ['API_DIGEST']
+          web=os.environ['BUILT_WEB'] if os.environ['OPERATION']=='deploy' else os.environ['WEB_DIGEST']
+          manifest={'sha':os.environ['RELEASE_SHA'],'operation':os.environ['OPERATION'],'baseline':baseline,'target':{'api':'ghcr.io/keenosmith-del/crewai-revenueops-api@'+api,'web':'ghcr.io/keenosmith-del/crewai-revenueops-web@'+web}}
+          validate_manifest(manifest,baseline)
+          open('release-manifest.json','w').write(json.dumps(manifest,indent=2)+'\n')
+          PY
+          ssh -o BatchMode=yes -o StrictHostKeyChecking=yes "$STAGING_USER@$STAGING_HOST" 'python3 /opt/revenueops/staging/staging_host.py' < release-manifest.json
+      - name: Verify application and authentication boundary
+        run: |
+          python - <<'PY'
+          import json,os,urllib.request,urllib.error
+          base=os.environ['STAGING_URL'].rstrip('/')
+          assert json.load(urllib.request.urlopen(base+'/health',timeout=20))['status']=='ok'
+          try:
+              urllib.request.urlopen(base+'/api/auth/me',timeout=20)
+              raise RuntimeError('Anonymous authentication bypass')
+          except urllib.error.HTTPError as error:
+              assert error.code==401
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: staging-release-manifest
+          path: |
+            staging-before.json
+            release-manifest.json

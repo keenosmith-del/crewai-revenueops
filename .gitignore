@@ -15,3 +15,9 @@ test-results/
 
 .runtime/
 .hypothesis/
+
+.backups/
+
+.verification-*.txt
+
+.verification-tools/
