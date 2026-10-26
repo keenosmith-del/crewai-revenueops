@@ -13,7 +13,11 @@ jobs:
         image: postgres:17.6
         env: {POSTGRES_USER: revenueops, POSTGRES_PASSWORD: ci-only, POSTGRES_DB: revenueops_test}
         ports: ['5432:5432']
-        options: --health-cmd 'pg_isready -U revenueops' --health-interval 3s --health-retries 20
+        options: >-
+          --health-cmd="pg_isready -U revenueops -d revenueops_test"
+          --health-interval=3s
+          --health-timeout=5s
+          --health-retries=20
     env:
       DATABASE_URL: postgresql+psycopg://revenueops:ci-only@localhost:5432/revenueops_test
       TEST_DATABASE_URL: postgresql+psycopg://revenueops:ci-only@localhost:5432/revenueops_test
@@ -58,7 +62,11 @@ jobs:
         image: postgres:17.6
         env: {POSTGRES_USER: revenueops, POSTGRES_PASSWORD: ci-only, POSTGRES_DB: revenueops_browser_test}
         ports: ['5432:5432']
-        options: --health-cmd 'pg_isready -U revenueops' --health-interval 3s --health-retries 20
+        options: >-
+          --health-cmd="pg_isready -U revenueops -d revenueops_browser_test"
+          --health-interval=3s
+          --health-timeout=5s
+          --health-retries=20
     env:
       DATABASE_URL: postgresql+psycopg://revenueops:ci-only@localhost:5432/revenueops_browser_test
       APP_ENV: test
