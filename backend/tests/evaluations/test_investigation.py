@@ -101,7 +101,7 @@ def test_actual_flow_with_mocked_inference_is_labelled_and_financially_validated
     assert result["assisted"]["mode"] == "mocked_contract_test"
     assert result["assisted"]["score"]["correct"]
     assert result["ledger_allocations_written"] == 0
-    assert len([event for event in events if event["kind"] == "task_completed"]) == 3
+    assert len([event for event in events if event["kind"] == "task_completed"]) == 2
     assert result["assisted"]["crew_id"]
 
 

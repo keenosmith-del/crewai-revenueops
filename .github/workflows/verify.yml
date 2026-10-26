@@ -35,6 +35,7 @@ jobs:
       - run: pytest -q tests/release
       - run: PYTHONPATH=backend python -m app.evaluations.runner
       - run: PYTHONPATH=backend python -m app.evaluations.investigation --baseline
+      - run: PYTHONPATH=backend python -m app.evaluations.investigation --baseline --dataset "$GITHUB_WORKSPACE/data/evaluations/holdout-010.json"
       - run: python scripts/check_contracts.py
       - run: python scripts/check_dependencies.py
       - uses: actions/upload-artifact@v4
@@ -44,7 +45,7 @@ jobs:
           path: |
             backend-results.xml
             docs/testing/evaluation.json
-            docs/testing/iteration-009/ambiguous-baseline.json
+            .runtime/evaluations/baseline.json
   frontend:
     runs-on: ubuntu-latest
     timeout-minutes: 10

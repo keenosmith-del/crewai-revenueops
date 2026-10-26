@@ -30,14 +30,18 @@ def validate_findings(value, context):
     return result
 
 
-def guardrail(context):
+def guardrail(context, record_validation=None):
     def check(output):
         try:
             result = validate_findings(
                 output.pydantic or Findings.model_validate_json(output.raw), context
             )
+            if record_validation:
+                record_validation("accepted", None)
             return True, result.model_dump_json()
         except (ValueError, TypeError) as exc:
+            if record_validation:
+                record_validation("rejected", type(exc).__name__)
             return False, str(exc)
 
     return check

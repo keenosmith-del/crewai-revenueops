@@ -25,6 +25,7 @@ class ReconciliationFlow(Flow[ReconciliationState]):
     checkpoint: Any = Field(default=None, exclude=True)
     record_call: Any = Field(default=None, exclude=True)
     task_callback: Any = Field(default=None, exclude=True)
+    validation_callback: Any = Field(default=None, exclude=True)
 
     def save(self, stage):
         self.state.stage = stage
@@ -48,7 +49,10 @@ class ReconciliationFlow(Flow[ReconciliationState]):
             return "collections"
         if self.state.classification == "exact":
             return "deterministic"
-        if self.state.classification in ("disputed", "ambiguous", "duplicate", "reversal"):
+        if self.state.classification in ("disputed", "duplicate", "reversal") or any(
+            key.startswith("dispute:") and record.get("status") == "open"
+            for key, record in self.context["records"].items()
+        ):
             return "dispute"
         return "investigate"
 
@@ -61,11 +65,15 @@ class ReconciliationFlow(Flow[ReconciliationState]):
             collections=collections,
             record_call=self.record_call,
             task_callback=self.task_callback,
+            validation_callback=self.validation_callback,
         )
         self.state.crew_id = str(crew.id)
         self.save("crew_started")
-        output = crew.kickoff()
-        self.state.usage = crew.usage_metrics.model_dump() if crew.usage_metrics else {}
+        try:
+            output = crew.kickoff()
+        finally:
+            metrics = crew.calculate_usage_metrics()
+            self.state.usage = metrics.model_dump() if metrics else {}
         result = validate_findings(output.pydantic, self.context)
         self.state.result = result.model_dump()
         self.save("quality_review")

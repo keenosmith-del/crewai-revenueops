@@ -45,18 +45,18 @@ def digest(value):
     ).hexdigest()
 
 
-def load_cases():
-    dataset = json.loads(DATASET.read_text())
+def load_cases(dataset_path=DATASET):
+    dataset = json.loads(dataset_path.read_text())
     if dataset["synthetic"] is not True or len({c["id"] for c in dataset["cases"]}) != len(
         dataset["cases"]
     ):
         raise ValueError("Unique labelled synthetic cases required")
     for case in dataset["cases"]:
-        money(case["payment"]["amount"], "ZAR")
+        money(case["payment"]["amount"], case.get("currency", "ZAR"))
         if len({i["id"] for i in case["invoices"]}) != len(case["invoices"]):
             raise ValueError("Duplicate fixture invoice ID")
         for invoice in case["invoices"]:
-            money(invoice["amount"], "ZAR")
+            money(invoice["amount"], invoice.get("currency", case.get("currency", "ZAR")))
         truth = case["ground_truth"]
         if truth["decision"] not in ("propose_allocation", "abstain") or bool(
             truth["allocations"]
@@ -100,10 +100,10 @@ def fixture(case):
         for item in case["invoices"]:
             db.add(
                 Invoice(
-                    **item,
+                    **{k: v for k, v in item.items() if k != "currency"},
                     org_id="eval-org",
                     customer_id="eval-customer",
-                    currency="ZAR",
+                    currency=item.get("currency", case.get("currency", "ZAR")),
                     issue_date=date(2026, 1, 1),
                     due_date=date(2026, 2, 1),
                 )
@@ -113,7 +113,7 @@ def fixture(case):
                 id="payment",
                 org_id="eval-org",
                 customer_id="eval-customer",
-                currency="ZAR",
+                currency=case.get("currency", "ZAR"),
                 payment_date=date(2026, 2, 2),
                 **case["payment"],
             )
@@ -229,12 +229,19 @@ def run_case(case, record_event, llm=None):
 
             # All DB sessions are closed before CrewAI starts. Tools receive only the snapshot.
             flow = ReconciliationFlow(
-                context=context, llm=provider, record_call=tool_call, task_callback=task_done
+                context=context,
+                llm=provider,
+                record_call=tool_call,
+                task_callback=task_done,
+                validation_callback=lambda status, error: record_event(
+                    {"kind": "validation", "status": status, "error_type": error}
+                ),
             )
             flow.kickoff()
             phase = "output_validation"
             finding = validate_findings(flow.state.result, context)
             phase = "financial_validation"
+            result["proposed_before_financial_validation"] = finding.model_dump()
             verify_financial_result(engine, case, finding)
             decision = (
                 "propose_allocation"
@@ -273,7 +280,27 @@ def summary(results, key):
     proposed = sum(r["score"].get("proposed", 0) for r in successful)
     correct_allocations = sum(r["score"].get("correct_allocations", 0) for r in successful)
     expected = sum(len(r["ground_truth"]["allocations"]) for r in results)
+    calls = [c for r in cases for c in r.get("tool_calls", [])]
+    validations = [e for r in cases for e in r.get("validation_events", [])]
+    known_usage = [r["usage"] for r in cases if r.get("usage", {}).get("total_tokens")]
     return {
+        "supported_allocations_recovered": correct_allocations,
+        "tool_calls": len(calls),
+        "tool_success_rate": sum(c["status"] == "ok" for c in calls) / len(calls)
+        if calls
+        else None,
+        "validation_rejections_observed": sum(e["status"] == "rejected" for e in validations),
+        "final_validation_failures": sum(
+            r.get("failed_phase") in ("output_validation", "financial_validation") for r in cases
+        ),
+        "inference_failures": sum(
+            r.get("status") in ("failed", "timeout")
+            and r.get("failed_phase") not in ("output_validation", "financial_validation")
+            for r in cases
+        ),
+        "latency_ms": sum(r.get("latency_ms", 0) for r in cases),
+        "known_total_tokens": sum(u["total_tokens"] for u in known_usage) if known_usage else None,
+        "cases_with_known_usage": len(known_usage),
         "cases": len(cases),
         "exact_decisions_correct": sum(r["score"]["correct"] for r in cases),
         "accuracy": sum(r["score"]["correct"] for r in cases) / len(cases),
@@ -288,21 +315,27 @@ def summary(results, key):
     }
 
 
-def parent_run(live=False, timeout=240):
+def parent_run(live=False, timeout=240, *, dataset_path=DATASET, output_dir=None):
     from app.core.config import settings
 
     if live and settings.model_mode != "ollama":
         raise ValueError("Set MODEL_MODE=ollama explicitly; hosted models are prohibited")
+    if live and output_dir is None:
+        raise ValueError("Live runs require a unique --output-dir inside iteration-010")
+    if output_dir is not None and not output_dir.resolve().is_relative_to(
+        ROOT / "docs/testing/iteration-010"
+    ):
+        raise ValueError("New reports must stay inside iteration-010 evidence")
     records = []
     scratch = ROOT / ".runtime/evaluations"
     scratch.mkdir(parents=True, exist_ok=True)
-    output = (
-        ROOT
-        / "docs/testing/iteration-009"
-        / ("ambiguous-live.json" if live else "ambiguous-baseline.json")
-    )
+    output = ROOT / ".runtime/evaluations" / ("live.json" if live else "baseline.json")
+    if output_dir is not None:
+        output = output_dir / ("live.json" if live else "baseline.json")
+        if output.exists():
+            raise ValueError("Reports are append-only by run directory; choose a new run name")
     output.parent.mkdir(parents=True, exist_ok=True)
-    for case in load_cases():
+    for case in load_cases(dataset_path):
         with fixture(case) as engine:
             context, baseline = evidence_and_baseline(engine, case)
         record = {
@@ -328,6 +361,8 @@ def parent_run(live=False, timeout=240):
                         "--live",
                         "--case",
                         case["id"],
+                        "--dataset",
+                        str(dataset_path),
                         "--result",
                         str(result_file),
                         "--trace",
@@ -364,6 +399,9 @@ def parent_run(live=False, timeout=240):
                     else []
                 )
                 record["assisted"]["tool_calls"] = [e for e in events if e["kind"] == "tool_call"]
+                record["assisted"]["validation_events"] = [
+                    e for e in events if e["kind"] == "validation"
+                ]
                 record["assisted"]["completed_tasks"] = [
                     e for e in events if e["kind"] == "task_completed"
                 ]
@@ -372,9 +410,16 @@ def parent_run(live=False, timeout=240):
             "synthetic": True,
             "mode": "live_local" if live else "deterministic_baseline",
             "model": settings.ollama_model if live else None,
-            "dataset_sha256": hashlib.sha256(DATASET.read_bytes()).hexdigest(),
+            "dataset_sha256": hashlib.sha256(dataset_path.read_bytes()).hexdigest(),
             "runner_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
             "crewai_version": importlib.metadata.version("crewai"),
+            "dataset": str(dataset_path.relative_to(ROOT)),
+            "application_sha256": {
+                str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest()
+                for folder in ("agents", "flows", "providers", "services")
+                for p in sorted((ROOT / "backend/app" / folder).rglob("*"))
+                if p.suffix in (".py", ".yaml")
+            },
             "timeout_seconds_per_case": timeout if live else None,
             "ground_truth_excluded_from_model_context": True,
             "same_evidence_hash_enforced": True,
@@ -382,7 +427,7 @@ def parent_run(live=False, timeout=240):
             "results": records,
             "baseline": summary(records, "baseline"),
             "limitations": [
-                "Four hand-authored synthetic cases, one model run each; not representative accuracy or an improvement guarantee.",
+                "Small hand-authored synthetic set, one model run each; not representative accuracy or an improvement guarantee.",
                 "Wrong-target proposals differ from financial-policy violations; every operational proposal still requires human review.",
                 "Failures remain in the accuracy denominator. Framework retries are unchanged; token usage may include estimates.",
                 "No application database, ledger posting, hosted inference or external communications are used.",
@@ -405,7 +450,14 @@ def main():
     mode.add_argument("--baseline", action="store_true")
     mode.add_argument("--live", action="store_true")
     parser.add_argument("--timeout", type=int, default=240)
-    parser.add_argument("--case", choices=[c["id"] for c in load_cases()], help=argparse.SUPPRESS)
+    parser.add_argument(
+        "--dataset",
+        type=Path,
+        default=DATASET,
+        choices=[DATASET, ROOT / "data/evaluations/holdout-010.json"],
+    )
+    parser.add_argument("--output-dir", type=Path)
+    parser.add_argument("--case", help=argparse.SUPPRESS)
     parser.add_argument("--result", type=Path, help=argparse.SUPPRESS)
     parser.add_argument("--trace", type=Path, help=argparse.SUPPRESS)
     args = parser.parse_args()
@@ -422,10 +474,15 @@ def main():
             with args.trace.open("a") as stream:
                 stream.write(json.dumps(event) + "\n")
 
-        case = next(c for c in load_cases() if c["id"] == args.case)
+        case = next(c for c in load_cases(args.dataset) if c["id"] == args.case)
         args.result.write_text(json.dumps(run_case(case, record_event), indent=2) + "\n")
     else:
-        report = parent_run(live=args.live, timeout=args.timeout)
+        report = parent_run(
+            live=args.live,
+            timeout=args.timeout,
+            dataset_path=args.dataset,
+            output_dir=args.output_dir,
+        )
         print(
             json.dumps(
                 {key: report[key] for key in ("baseline", "assisted") if key in report}, indent=2

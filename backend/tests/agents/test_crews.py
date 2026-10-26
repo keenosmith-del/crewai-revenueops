@@ -140,3 +140,35 @@ def test_actual_guardrail_rejects_fabricated_citation():
         TaskOutput(description="Synthetic invalid output", raw=json.dumps(fabricated), agent="mock")
     )
     assert outcome[0] is False
+
+
+def test_snapshot_and_prefixed_ids_cannot_expand_allowlist():
+    tool = FinancialEvidenceTool(records=CONTEXT["records"])
+    assert json.loads(tool._run("snapshot", "all"))["record"] == CONTEXT["records"]
+    assert json.loads(tool._run("transaction", "transaction:tx"))["status"] == "ok"
+    missing = json.loads(tool._run("invoice", "transaction:tx"))
+    assert missing["status"] == "not_found"
+    assert missing["allowed_references"] == ["transaction:tx"]
+    assert (
+        json.loads(tool._run("transaction", "transaction:transaction:tx"))["status"] == "not_found"
+    )
+
+
+def test_ambiguity_keeps_two_independent_reviewers_and_open_disputes_add_specialist():
+    context = {**CONTEXT, "classification": "ambiguous"}
+    flow = ReconciliationFlow(context=context)
+    flow.load_case()
+    assert flow.route() == "investigate"
+    flow.context["records"] = {**CONTEXT["records"], "dispute:d": {"status": "open"}}
+    assert flow.route() == "dispute"
+
+
+def test_validation_failures_are_observed_without_accepting_invalid_output():
+    from crewai.tasks.task_output import TaskOutput
+
+    from app.agents.tasks.validation import guardrail
+
+    events = []
+    valid = guardrail(CONTEXT, lambda *event: events.append(event))
+    assert valid(TaskOutput(description="Synthetic", raw="{}", agent="mock"))[0] is False
+    assert events == [("rejected", "ValidationError")]

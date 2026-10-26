@@ -25,6 +25,7 @@ def snapshot(db, org, case_id):
                 "amount",
                 "currency",
                 "payment_date",
+                "source_id",
                 "customer_id",
                 "duplicate_of",
             )

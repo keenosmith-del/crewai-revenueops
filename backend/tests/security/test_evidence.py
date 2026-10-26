@@ -57,6 +57,7 @@ def test_injected_reference_has_no_privileged_tool(db, user):
     assert response["record"]["reference"] == tx.reference
     assert set(tool.args_schema.model_fields) == {"kind", "record_id"}
     assert set(tool.args_schema.model_fields["kind"].annotation.__args__) == {
+        "snapshot",
         "invoice",
         "transaction",
         "customer",

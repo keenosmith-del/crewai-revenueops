@@ -1,0 +1,241 @@
+{
+  "synthetic": true,
+  "mode": "deterministic_baseline",
+  "model": null,
+  "dataset_sha256": "4b1b934c5352fb7ef741d5b2d1dedd17f789c91fc35f7b5752a101d4580c6766",
+  "runner_sha256": "52bb717c52d3ab8d0243f59800724c7ab66ae6c1062fd444f64183592dafba4a",
+  "crewai_version": "1.15.30",
+  "dataset": "data/evaluations/holdout-010.json",
+  "application_sha256": {
+    "backend/app/agents/config/agents.yaml": "39f8cf9f31d167579a98553baeeb6d1f87a19caeb67a6d7db92b876a20113395",
+    "backend/app/agents/config/tasks.yaml": "9f39390aa8c118236f226d1135307528082074405d55b4cdcaf7c26d6298f203",
+    "backend/app/agents/crews/investigation.py": "284d31e467af2a041b936cb0deb38d7f6a861e8ae588fda97c0eb18e3d89fe46",
+    "backend/app/agents/schemas/outputs.py": "f54da09bde66c6dbebcc90cd0868d584d19a722d76ad4641eeac7645de58975c",
+    "backend/app/agents/tasks/validation.py": "6c3e2b272d36b4d1822d0016b4ef2a485275690ad7347ff010f91bf7467c3a6b",
+    "backend/app/agents/tools/evidence.py": "d555b1b446728c68e45aded58b7b8ccdfa1401c6b3d7f93259d9394fff7bf2a3",
+    "backend/app/flows/reconciliation.py": "03f906c70c767e6009e1316b7787156b7d5d8272b962cb062521943d966eea8b",
+    "backend/app/providers/models.py": "67b47d56402894b7abe81bb4f0eb9c552b1585907cef04ca3e281af1c11a1052",
+    "backend/app/services/evidence.py": "e178f79ae3ea229062dd7bdf8385c70a2adb90a0639ec4f2a50c715587f8746c",
+    "backend/app/services/imports.py": "735b9d8400015b38987c04aa74d753b94d0eb955fb2208e68602811264787640",
+    "backend/app/services/ledger.py": "2335ef7da611306072c751d302115b9bacf5f6aa5935355747e6c4f87dcc8dcc",
+    "backend/app/services/reporting.py": "7b9d9d3ab23e2b9c8e82f88a5c12de5fd98e20dcc9ed39229e5c940b1d9a2a07",
+    "backend/app/services/workflows.py": "03a10cfea722f9451c65041ddba3350aa1fffa76f6bf8b9b905044fa7c1be4b6"
+  },
+  "timeout_seconds_per_case": null,
+  "ground_truth_excluded_from_model_context": true,
+  "same_evidence_hash_enforced": true,
+  "attempts_per_case": 1,
+  "results": [
+    {
+      "case_id": "single-intent",
+      "evidence_sha256": "476de2964d988bf22a76ea06cf336b61eb1696bfa2a4187331ba8b0b2a060677",
+      "ground_truth": {
+        "decision": "propose_allocation",
+        "allocations": [
+          {
+            "invoice_id": "h2",
+            "amount": "120.00"
+          }
+        ],
+        "rationale": "single-intent"
+      },
+      "baseline": {
+        "classification": "ambiguous",
+        "decision": "abstain",
+        "allocations": [],
+        "score": {
+          "correct": false,
+          "abstained": true,
+          "proposed": 0,
+          "correct_allocations": 0,
+          "expected_allocations": 1,
+          "wrong_target_or_amount": 0
+        }
+      },
+      "ledger_allocations_written": 0
+    },
+    {
+      "case_id": "split-intent",
+      "evidence_sha256": "2dfd1fe5720b8332fd2d748e0dfda2b0770023275a482a4c0f8870efd0ce0ab7",
+      "ground_truth": {
+        "decision": "propose_allocation",
+        "allocations": [
+          {
+            "invoice_id": "h1",
+            "amount": "80.00"
+          },
+          {
+            "invoice_id": "h2",
+            "amount": "40.00"
+          }
+        ],
+        "rationale": "split-intent"
+      },
+      "baseline": {
+        "classification": "amount_customer",
+        "decision": "propose_allocation",
+        "allocations": [
+          {
+            "invoice_id": "h3",
+            "amount": "120.000"
+          }
+        ],
+        "score": {
+          "correct": false,
+          "abstained": false,
+          "proposed": 1,
+          "correct_allocations": 0,
+          "expected_allocations": 2,
+          "wrong_target_or_amount": 1
+        }
+      },
+      "ledger_allocations_written": 0
+    },
+    {
+      "case_id": "unclear-intent",
+      "evidence_sha256": "3d137eea76f6064e60a94fc3cfea9c532bdaaf46268cf6f0f9a6722e7b234ff1",
+      "ground_truth": {
+        "decision": "abstain",
+        "allocations": [],
+        "rationale": "unclear-intent"
+      },
+      "baseline": {
+        "classification": "ambiguous",
+        "decision": "abstain",
+        "allocations": [],
+        "score": {
+          "correct": true,
+          "abstained": true,
+          "proposed": 0,
+          "correct_allocations": 0,
+          "expected_allocations": 0,
+          "wrong_target_or_amount": 0
+        }
+      },
+      "ledger_allocations_written": 0
+    },
+    {
+      "case_id": "active-dispute",
+      "evidence_sha256": "fe62a0102dbf8bc97168d9edc9b1bf5f4097b9eaa90eaa0cf67eb85cff3fa3b8",
+      "ground_truth": {
+        "decision": "abstain",
+        "allocations": [],
+        "rationale": "active-dispute"
+      },
+      "baseline": {
+        "classification": "amount_customer",
+        "decision": "propose_allocation",
+        "allocations": [
+          {
+            "invoice_id": "h2",
+            "amount": "120.000"
+          }
+        ],
+        "score": {
+          "correct": false,
+          "abstained": false,
+          "proposed": 1,
+          "correct_allocations": 0,
+          "expected_allocations": 0,
+          "wrong_target_or_amount": 1
+        }
+      },
+      "ledger_allocations_written": 0
+    },
+    {
+      "case_id": "missing-link",
+      "evidence_sha256": "f95641773ad573d220e1f69dcf9c4d95bd0fb5ac7d53eac99762e4cd3058f9b9",
+      "ground_truth": {
+        "decision": "abstain",
+        "allocations": [],
+        "rationale": "missing-link"
+      },
+      "baseline": {
+        "classification": "unmatched",
+        "decision": "abstain",
+        "allocations": [],
+        "score": {
+          "correct": true,
+          "abstained": true,
+          "proposed": 0,
+          "correct_allocations": 0,
+          "expected_allocations": 0,
+          "wrong_target_or_amount": 0
+        }
+      },
+      "ledger_allocations_written": 0
+    },
+    {
+      "case_id": "hostile-note",
+      "evidence_sha256": "ddb85ad4564a31a5c9b3057bd3aa99a387ade0f6935fcb1339f2e23c993da507",
+      "ground_truth": {
+        "decision": "abstain",
+        "allocations": [],
+        "rationale": "hostile-note"
+      },
+      "baseline": {
+        "classification": "ambiguous",
+        "decision": "abstain",
+        "allocations": [],
+        "score": {
+          "correct": true,
+          "abstained": true,
+          "proposed": 0,
+          "correct_allocations": 0,
+          "expected_allocations": 0,
+          "wrong_target_or_amount": 0
+        }
+      },
+      "ledger_allocations_written": 0
+    },
+    {
+      "case_id": "foreign-invoice",
+      "evidence_sha256": "a1e343b44c778255ba5bd524840b1e3e5bdaf64bf1e4c9eea7963beed76fceeb",
+      "ground_truth": {
+        "decision": "abstain",
+        "allocations": [],
+        "rationale": "foreign-invoice"
+      },
+      "baseline": {
+        "classification": "unmatched",
+        "decision": "abstain",
+        "allocations": [],
+        "score": {
+          "correct": true,
+          "abstained": true,
+          "proposed": 0,
+          "correct_allocations": 0,
+          "expected_allocations": 0,
+          "wrong_target_or_amount": 0
+        }
+      },
+      "ledger_allocations_written": 0
+    }
+  ],
+  "baseline": {
+    "supported_allocations_recovered": 0,
+    "tool_calls": 0,
+    "tool_success_rate": null,
+    "validation_rejections_observed": 0,
+    "final_validation_failures": 0,
+    "inference_failures": 0,
+    "latency_ms": 0,
+    "known_total_tokens": null,
+    "cases_with_known_usage": 0,
+    "cases": 7,
+    "exact_decisions_correct": 4,
+    "accuracy": 0.5714285714285714,
+    "failures": 0,
+    "abstentions": 5,
+    "proposed_allocations": 2,
+    "wrong_target_or_amount": 2,
+    "allocation_precision": 0.0,
+    "allocation_recall": 0.0
+  },
+  "limitations": [
+    "Small hand-authored synthetic set, one model run each; not representative accuracy or an improvement guarantee.",
+    "Wrong-target proposals differ from financial-policy violations; every operational proposal still requires human review.",
+    "Failures remain in the accuracy denominator. Framework retries are unchanged; token usage may include estimates.",
+    "No application database, ledger posting, hosted inference or external communications are used."
+  ]
+}

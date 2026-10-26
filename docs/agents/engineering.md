@@ -77,3 +77,21 @@ disabled. No CrewAI login or AMP service is required.
 Token usage is stored only when returned by CrewAI. Local model cost is not fabricated;
 estimated monetary cost remains unmeasured. Concise structured findings are persisted;
 hidden chain-of-thought and raw model transcripts are not required or saved by the app.
+
+## Iteration 010 interface reliability
+Use read_financial_evidence(kind="snapshot", record_id="all") once per reviewer for the
+complete allowlisted snapshot. Individual reads accept raw IDs or one matching kind prefix;
+business invoice references are not IDs. A miss lists only scoped keys. No search, database,
+network, posting or sending capability is added. source_id is now available for remittance
+linkage; strings remain untrusted. Resolved notes may supply facts but never instructions.
+
+Ordinary ambiguity retains two independent tasks; open disputes add the analyst. Each task
+must return typed, exactly cited Findings. Reviewers challenge unsupported abstentions as
+well as unsupported allocations. The existing financial validator still checks Decimal
+amounts, same customer/currency, open disputes and balances before any accepted proposal;
+posting remains deterministic and requires human approval. Runtime retry bounds unchanged.
+
+Evaluation observes guardrail rejections separately from inference failures and preserves
+unknown usage. See docs/testing/iteration-010/methodology.md and iteration-010.md for limits.
+The APIs follow CrewAI 1.15.30 official Tasks, Tools and Agents documentation; the installed
+version is pinned and exercised by actual CrewAI contract tests, with labelled mock inference.

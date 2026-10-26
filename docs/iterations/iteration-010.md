@@ -25,3 +25,31 @@ externally because a commit cannot contain its own hash.
 
 Stage 1 local verification: Ruff passed; existing evaluation tests 10 passed (37 framework
 warnings); diff check passed. No application changes in this stage. Hosted outcome pending.
+
+Stage 1 commit f1e21382a9ec686eb585d7ca93021a2f66f64244 verified on origin/main.
+Hosted run https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40369553647
+succeeded: backend, browser, frontend, containers, secrets (receipt ci-stage-1.json).
+
+## Stage 2 — interface and evaluation reliability
+Added one scoped snapshot read, explicit raw ID/citation distinction, allowlisted error
+hints and single matching-prefix handling. Added missing source_id evidence. Prompts state
+resolved vs open dispute semantics and require concrete missing information. Ordinary
+ambiguity uses investigator + independent quality reviewer; actual open disputes retain
+three roles. All typed findings and exact-citation/financial controls remain enforced.
+Supported CrewAI APIs retained: BaseTool args_schema, sequential explicit context,
+output_pydantic, callable guardrail and bounded retry. No framework dependency changes.
+
+Runner adds separate holdouts, guarded unique live report directories, hashes of application
+files, observed validation events, partial available usage on exception, proposal capture
+before financial rejection, tool success and failure metrics. Historical 009 reports cannot
+be overwritten by defaults. Financial SQL and ledger mutation code unchanged.
+
+Initial verification exposed two test expectations needing update: Flow copies context
+(the routing test must mutate flow.context), and security allowlist now includes snapshot.
+Neither required weakening a guardrail. SQLite run initially 98 passed, 1 failed, 1 skipped
+before correcting the tool-kind expectation; definitive PostgreSQL results follow.
+
+Stage 2 definitive local checks: 100 backend/release tests passed against real dedicated
+PostgreSQL (138 compatibility warnings, 8.03s); Ruff lint/format, actionlint and diff check
+passed. Fixed baseline 1/4, holdout baseline 4/7; zero labelled supported allocations
+recovered by either baseline. No live inference results yet. Hosted outcome pending.
