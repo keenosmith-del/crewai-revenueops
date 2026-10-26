@@ -8,3 +8,5 @@ No message sender or payment executor exists. Production rejects demo and defaul
 Previous iteration commit: 68bbb1e. This stage hash is in the release manifest.
 Limitations: no SSO or self-service identity administration; ingress controls remain an
 operator prerequisite. SQLite tests do not establish concurrency; PostgreSQL follows.
+
+Verified implementation commit: `c245fe18871c8aa31298a148e296d79786050e51`.

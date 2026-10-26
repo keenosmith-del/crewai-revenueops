@@ -9,3 +9,5 @@ Decision: conservative review for all proposals; unsupported FX and unknown acco
 fail closed. No authoritative balance stored separately from allocations.
 Limitations: CSV only; PDF extraction/OCR intentionally not claimed.
 Previous stage: 1be4525. This commit hash is in the release manifest.
+
+Verified implementation commit: `68bbb1e8b60696d601d268be90cd141c1098fb3e`.

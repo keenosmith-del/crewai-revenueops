@@ -18,3 +18,5 @@ identity, environment enforcement or production correctness. Deployment activati
 credentials remain explicit operator prerequisites in docs/deployment/staging.md.
 
 Previous iteration 2a14e2b. This stage hash recorded in final release manifest.
+
+Verified implementation commit: `cde9a4c115a26ab2bd5e2b32e977b11415044fac`.

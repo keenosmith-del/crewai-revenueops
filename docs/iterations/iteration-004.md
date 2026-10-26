@@ -11,3 +11,5 @@ Ports 5050/5173 occupied by existing services; used 5051/5174 without killing th
 Limitations: dense structured evidence uses JSON inspection; customer detail currently
 uses bounded related-record views rather than a full CRM editor. No external sending.
 Previous stage c245fe1. Hash recorded in final release manifest.
+
+Verified implementation commit: `eb0cbcfb8b903e27c7a8dcfcf7d0e9f2003a8d3f`.

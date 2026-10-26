@@ -22,3 +22,5 @@ remote deployment and production remain unverified; no external financial action
 Previous iteration cde9a4c. Engineering commit SHA recorded by the final metadata commit
 in release-manifest.json (a commit cannot contain its own SHA). Only repository-owned
 changes included. No push, paid service, messaging or production action authorised/executed.
+
+Verified implementation commit: `5e09ee397438ab90ca92b8b35f494fc039455fc8`.

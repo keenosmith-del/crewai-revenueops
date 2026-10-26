@@ -1,0 +1,108 @@
+{
+  "project": "RevenueOps Intelligence",
+  "version": "0.1.0",
+  "verification_date": "2026-10-26",
+  "engineering_commit": "5e09ee397438ab90ca92b8b35f494fc039455fc8",
+  "iterations": [
+    {
+      "iteration": "iteration-001",
+      "commit": "1be45254ded2b434507289c137b17a6b9cf36479",
+      "subject": "iteration-001: establish architecture and tooling"
+    },
+    {
+      "iteration": "iteration-002",
+      "commit": "68bbb1e8b60696d601d268be90cd141c1098fb3e",
+      "subject": "iteration-002: implement financial persistence and reconciliation"
+    },
+    {
+      "iteration": "iteration-003",
+      "commit": "c245fe18871c8aa31298a148e296d79786050e51",
+      "subject": "iteration-003: implement financial review workflows"
+    },
+    {
+      "iteration": "iteration-004",
+      "commit": "eb0cbcfb8b903e27c7a8dcfcf7d0e9f2003a8d3f",
+      "subject": "iteration-004: deliver connected operational console"
+    },
+    {
+      "iteration": "iteration-005",
+      "commit": "823ccff9d421bdf7431276b397c86abb4a64ff6f",
+      "subject": "iteration-005: implement CrewAI agents and flows"
+    },
+    {
+      "iteration": "iteration-006",
+      "commit": "2a14e2b8a38fbe49e121f8d887a5c26a36f02ce6",
+      "subject": "iteration-006: validate agent behaviour and financial controls"
+    },
+    {
+      "iteration": "iteration-007",
+      "commit": "cde9a4c115a26ab2bd5e2b32e977b11415044fac",
+      "subject": "iteration-007: implement CI/CD and release tooling"
+    },
+    {
+      "iteration": "iteration-008",
+      "commit": "5e09ee397438ab90ca92b8b35f494fc039455fc8",
+      "subject": "iteration-008: complete verification and handover"
+    }
+  ],
+  "local_images": {
+    "revenueops-api:local": {
+      "local_image_id": "sha256:2e01255ca6bafb0a77f2f562c953600f68362c71ab629166bccf396d424cc31d",
+      "architecture": "arm64",
+      "repository_digests": [
+        "revenueops-api@sha256:2e01255ca6bafb0a77f2f562c953600f68362c71ab629166bccf396d424cc31d"
+      ],
+      "published": false
+    },
+    "revenueops-web:local": {
+      "local_image_id": "sha256:f3d52583c6c796ca25c160d5fed749dcea8c44a3304de7243fd3de87c16a73e8",
+      "architecture": "arm64",
+      "repository_digests": [
+        "revenueops-web@sha256:f3d52583c6c796ca25c160d5fed749dcea8c44a3304de7243fd3de87c16a73e8"
+      ],
+      "published": false
+    }
+  },
+  "checks": {
+    "postgresql_and_release_tests_passed": 78,
+    "backend_statement_coverage_percent": 81,
+    "frontend_component_tests_passed": 5,
+    "isolated_browser_tests_passed": 5,
+    "baseline_cases_correct": 13,
+    "baseline_cases": 13,
+    "live_local_comparison_baseline_correct": 3,
+    "live_local_comparison_assisted_correct": 3,
+    "live_local_comparison_cases": 3,
+    "live_large_case_failures_recorded": 2,
+    "residual_reviewed_dependency_advisories": 4,
+    "secret_scan": "passed",
+    "workflow_syntax": "passed"
+  },
+  "status": {
+    "implemented": true,
+    "locally_tested": true,
+    "mocked_inference_used_for_contract_tests": true,
+    "live_local_model_verified_on_selected_small_cases": true,
+    "hosted_model_verified": false,
+    "hosted_ci_verified": false,
+    "deployment_prepared": true,
+    "deployed": false,
+    "production_verified": false,
+    "pushed": false
+  },
+  "running_local_services": {
+    "web": "http://localhost:5174",
+    "api": "http://localhost:5051",
+    "postgresql_port": 55433,
+    "mode": "baseline",
+    "data": "synthetic"
+  },
+  "evidence": "docs/testing/results.md",
+  "handover": "docs/portfolio/handover.md",
+  "limitations": [
+    "Larger model cases timed out or failed validation; no general accuracy improvement claim.",
+    "Four unpatched unused Chroma server advisories remain under exact-version expiring review.",
+    "Hosted CI, registry publish, protected environment activation and staging/rollback have not executed.",
+    "The metadata commit records existing engineering hashes and does not attempt a self-referential hash."
+  ]
+}

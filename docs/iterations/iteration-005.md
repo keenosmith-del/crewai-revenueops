@@ -10,3 +10,5 @@ mocked contract-test claim. No hosted provider invoked; no agent financial posti
 Limitations: interrupted incomplete crews may repeat read-only inference; validated
 result checkpoints avoid repeating completed reasoning. Detailed recovery documented.
 Previous iteration eb0cbcf. Hash in final release manifest.
+
+Verified implementation commit: `823ccff9d421bdf7431276b397c86abb4a64ff6f`.

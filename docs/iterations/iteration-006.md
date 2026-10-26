@@ -14,3 +14,5 @@ Removed optional LiteLLM and unused AWS dependencies; native OpenAI-compatible O
 provider allows patched filelock 4.2.1 without breaking supported dependency constraints.
 Tests actually invoke CrewAI with mocked inference; do not confuse with the live probe.
 Previous iteration 823ccff. This stage hash in final release manifest.
+
+Verified implementation commit: `2a14e2b8a38fbe49e121f8d887a5c26a36f02ce6`.
