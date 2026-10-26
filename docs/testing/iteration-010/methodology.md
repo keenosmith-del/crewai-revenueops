@@ -49,3 +49,6 @@ model or prompt. Compare same fixed labels across iterations, preserve both orig
 reports and all 010 attempts. Token usage on caught failures is partial when available;
 process timeout usage is unknown. Do not compare a full-run token sum with historical
 completed-only usage as an efficiency gain. Fewer calls can also mean earlier failure.
+
+Baseline summary latency_ms=0 is an uninstrumented placeholder, not a measured zero
+runtime. Latency comparisons in results.md refer only to actual assisted runs.

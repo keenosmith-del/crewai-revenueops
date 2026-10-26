@@ -59,7 +59,7 @@ Hosted run https://github.com/keenosmith-del/crewai-revenueops/actions/runs/4037
 succeeded in all five jobs; receipt ci-stage-2.json. Local live evaluation begins only
 with this frozen application configuration. No prompts or labels change between cases.
 
-## Stage 3 — live evaluation and full verification (in progress)
+## Stage 3 — live evaluation and full verification (verified)
 Run fixed-live-01 then holdout-live-01 sequentially on installed llama3.2:3b; all attempts
 retained. The added source_id changes the evidence schema relative to 009; dataset and
 labels stay frozen, baseline/assisted evidence hashes match within 010. Any before/after
@@ -107,3 +107,24 @@ no download, paid model, deployment, paid provisioning, bank action or communica
 Full-schema guidance did not resolve typed output and adds prompt text. A future
 investigation needs field-level error metadata and controlled stronger-model evaluation;
 no guardrail should be loosened. Stage 3 hosted outcome will be recorded after observation.
+
+
+### Stage 3 verified remote result
+Commit c525294dd7661c6e79c0ffada064e34b1d3755d6 was verified on origin/main.
+Hosted run https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40372045437
+succeeded in all five jobs: backend, browser, frontend, containers and secrets. Its browser
+dependency installation was slower than prior runs; no check was bypassed or deployment
+invoked. The exact job receipts are retained in ci-stage-3.json.
+
+## Completed stage chain and final receipt boundary
+| Stage | Commit | Successful hosted verification |
+|---|---|---|
+| Audit and sealed holdouts | f1e21382a9ec686eb585d7ca93021a2f66f64244 | https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40369553647 |
+| Evidence contracts and evaluation reliability | 2a1029838a38cb9dafa2f38dbfdbf635357ce619 | https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40370217830 |
+| All live results and documentation | c525294dd7661c6e79c0ffada064e34b1d3755d6 | https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40372045437 |
+
+This final receipt records the already observed Stage 3 outcome. Its own SHA and hosted
+verification are checked after normal push and reported in the final response; a commit
+cannot contain its own hash or a future run result. No history rewriting or deployment.
+The model-quality conclusion remains negative: fixed 0/4, holdout 1/7, nine schema failures,
+one of six supported pairs recovered. All rejected outputs remain failures, not abstentions.
