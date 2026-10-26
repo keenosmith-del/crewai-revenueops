@@ -1,0 +1,36 @@
+name: revenueops
+services:
+  db:
+    image: postgres:17.6
+    environment:
+      POSTGRES_USER: revenueops
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-local-only}
+      POSTGRES_DB: revenueops
+    ports: ["127.0.0.1:55433:5432"]
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U revenueops"]
+      interval: 3s
+      retries: 20
+  api:
+    build: ./backend
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://revenueops:${POSTGRES_PASSWORD:-local-only}@db/revenueops
+    ports: ["127.0.0.1:5050:5050"]
+    depends_on:
+      db: {condition: service_healthy}
+    command: ["sh", "-c", "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 5050"]
+  worker:
+    build: ./backend
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://revenueops:${POSTGRES_PASSWORD:-local-only}@db/revenueops
+    depends_on: [api]
+    command: ["python", "-m", "app.workers.runner"]
+  web:
+    build: ./frontend
+    ports: ["127.0.0.1:5173:80"]
+    depends_on: [api]
+volumes:
+  pgdata:

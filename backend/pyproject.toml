@@ -1,0 +1,17 @@
+[project]
+name = "revenueops-intelligence"
+version = "0.1.0"
+requires-python = ">=3.12,<3.14"
+dynamic = ["dependencies"]
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+[tool.ruff]
+line-length = 100
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+ignore = ["E501"]
+[tool.setuptools.dynamic]
+dependencies = {file = "requirements.txt"}
+[tool.setuptools.packages.find]
+include = ["app*"]
