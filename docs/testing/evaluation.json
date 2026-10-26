@@ -1,0 +1,149 @@
+{
+  "dataset": "13 synthetic known-truth cases; ephemeral SQLite benchmark, not the business database",
+  "mode": "deterministic_baseline",
+  "cases": 13,
+  "classifications_correct": 13,
+  "allocation_cases_correct": 13,
+  "proposal_precision": 1.0,
+  "proposal_recall": 1.0,
+  "duration_ms": 177,
+  "results": [
+    {
+      "name": "exact",
+      "expected_classification": "exact",
+      "classification": "exact",
+      "classification_correct": true,
+      "allocations_correct": true,
+      "proposed_allocations": 1,
+      "supported_allocations": 1,
+      "expected_allocations": 1
+    },
+    {
+      "name": "partial",
+      "expected_classification": "partial",
+      "classification": "partial",
+      "classification_correct": true,
+      "allocations_correct": true,
+      "proposed_allocations": 1,
+      "supported_allocations": 1,
+      "expected_allocations": 1
+    },
+    {
+      "name": "overpayment",
+      "expected_classification": "overpayment",
+      "classification": "overpayment",
+      "classification_correct": true,
+      "allocations_correct": true,
+      "proposed_allocations": 1,
+      "supported_allocations": 1,
+      "expected_allocations": 1
+    },
+    {
+      "name": "combined",
+      "expected_classification": "combined",
+      "classification": "combined",
+      "classification_correct": true,
+      "allocations_correct": true,
+      "proposed_allocations": 2,
+      "supported_allocations": 2,
+      "expected_allocations": 2
+    },
+    {
+      "name": "missing_reference",
+      "expected_classification": "amount_customer",
+      "classification": "amount_customer",
+      "classification_correct": true,
+      "allocations_correct": true,
+      "proposed_allocations": 1,
+      "supported_allocations": 1,
+      "expected_allocations": 1
+    },
+    {
+      "name": "wrong_reference",
+      "expected_classification": "amount_customer",
+      "classification": "amount_customer",
+      "classification_correct": true,
+      "allocations_correct": true,
+      "proposed_allocations": 1,
+      "supported_allocations": 1,
+      "expected_allocations": 1
+    },
+    {
+      "name": "unmatched",
+      "expected_classification": "unmatched",
+      "classification": "unmatched",
+      "classification_correct": true,
+      "allocations_correct": true,
+      "proposed_allocations": 0,
+      "supported_allocations": 0,
+      "expected_allocations": 0
+    },
+    {
+      "name": "reversal",
+      "expected_classification": "reversal",
+      "classification": "reversal",
+      "classification_correct": true,
+      "allocations_correct": true,
+      "proposed_allocations": 0,
+      "supported_allocations": 0,
+      "expected_allocations": 0
+    },
+    {
+      "name": "duplicate",
+      "expected_classification": "duplicate",
+      "classification": "duplicate",
+      "classification_correct": true,
+      "allocations_correct": true,
+      "proposed_allocations": 0,
+      "supported_allocations": 0,
+      "expected_allocations": 0
+    },
+    {
+      "name": "disputed",
+      "expected_classification": "disputed",
+      "classification": "disputed",
+      "classification_correct": true,
+      "allocations_correct": true,
+      "proposed_allocations": 0,
+      "supported_allocations": 0,
+      "expected_allocations": 0
+    },
+    {
+      "name": "cross_currency",
+      "expected_classification": "unmatched",
+      "classification": "unmatched",
+      "classification_correct": true,
+      "allocations_correct": true,
+      "proposed_allocations": 0,
+      "supported_allocations": 0,
+      "expected_allocations": 0
+    },
+    {
+      "name": "ambiguous",
+      "expected_classification": "ambiguous",
+      "classification": "ambiguous",
+      "classification_correct": true,
+      "allocations_correct": true,
+      "proposed_allocations": 0,
+      "supported_allocations": 0,
+      "expected_allocations": 0
+    },
+    {
+      "name": "prompt_injection",
+      "expected_classification": "unmatched",
+      "classification": "unmatched",
+      "classification_correct": true,
+      "allocations_correct": true,
+      "proposed_allocations": 0,
+      "supported_allocations": 0,
+      "expected_allocations": 0
+    }
+  ],
+  "crewai_assisted": {
+    "mode": "live_local",
+    "cases": 1,
+    "status": "failed",
+    "directly_comparable": false,
+    "limitation": "Single synthetic runtime probe is not a labelled assisted benchmark. No quality improvement claim is justified."
+  }
+}

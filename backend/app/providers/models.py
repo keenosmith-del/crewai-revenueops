@@ -45,8 +45,9 @@ def get_llm():
     if settings.model_mode == "ollama":
         health()
         return LLM(
-            model="ollama/" + settings.ollama_model,
-            base_url=settings.ollama_url,
+            model="openai/" + settings.ollama_model,
+            base_url=settings.ollama_url.rstrip("/") + "/v1",
+            api_key="ollama",
             temperature=0,
             timeout=90,
             max_tokens=2500,

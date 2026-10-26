@@ -1,19 +1,8 @@
-import pytest
 from fastapi.testclient import TestClient
 
-from app.db.session import get_db
 from app.main import app
 from app.models.entities import Customer, Organisation
-from app.security.auth import passwords, token
-
-
-@pytest.fixture
-def client(db, user):
-    app.dependency_overrides[get_db] = lambda: db
-    with TestClient(app) as c:
-        c.headers["Authorization"] = "Bearer " + token(user)
-        yield c
-    app.dependency_overrides.clear()
+from app.security.auth import passwords
 
 
 def test_authentication_required():

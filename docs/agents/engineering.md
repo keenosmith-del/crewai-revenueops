@@ -1,5 +1,5 @@
 # CrewAI engineering
-Pinned CrewAI 1.15.30, LiteLLM 1.106.4, Pydantic 2.12.5; Python 3.12.
+Pinned CrewAI 1.15.30, native OpenAI SDK 2.54.0, Pydantic 2.12.5; Python 3.12.
 Official references reviewed 2026-10-26:
 - https://docs.crewai.com/en/concepts/flows
 - https://docs.crewai.com/en/concepts/agents
@@ -60,7 +60,11 @@ CrewAI warns that closure callbacks are not serialisable; this application does 
 Crew object serialisation or its separate checkpoint store.
 
 ## Providers and disclosure
-MODEL_MODE=baseline (default), ollama, or explicitly enabled hosted. Ollama URL is
+MODEL_MODE=baseline (default), ollama, or explicitly enabled hosted.
+Ollama uses its officially supported /v1 OpenAI-compatible endpoint via CrewAI native
+OpenAI provider with a local-only placeholder key. LiteLLM was removed because its
+current filelock<4 constraint blocks security fixes. References:
+https://docs.ollama.com/api/openai-compatibility and CrewAI concepts/llms. Ollama URL is
 restricted to local hostnames, model presence and advertised tools checked before work.
 llama3.2:3b is installed locally (~2GB model); capability support is not evidence of
 reconciliation accuracy. Timeout, malformed output and invalid citations fail explicitly.

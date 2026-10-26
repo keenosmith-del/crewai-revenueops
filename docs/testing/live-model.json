@@ -1,0 +1,13 @@
+{
+  "execution_id": "fde9c8df-6ee7-4a37-b2c2-7d9fb373a04e",
+  "mode": "ollama",
+  "model": "llama3.2:3b",
+  "status": "failed",
+  "stage": "failed",
+  "error": "TimeoutError",
+  "duration_ms": null,
+  "usage": {},
+  "tool_calls": 1,
+  "result": {},
+  "no_ledger_mutations": true
+}

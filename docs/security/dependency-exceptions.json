@@ -1,0 +1,10 @@
+{
+  "reviewed": "2026-10-26",
+  "expires": "2026-11-26",
+  "exceptions": [
+    {"package":"chromadb","version":"1.5.9","id":"PYSEC-2026-311","reason":"CrewAI transitive import. No Chroma server, embedding-model endpoint, trust_remote_code, knowledge or memory is enabled; no server exposed. Upstream lists no patched version."},
+    {"package":"chromadb","version":"1.5.9","id":"PYSEC-2026-3814","reason":"Chroma collection update server path is not deployed or reachable; no published patched version."},
+    {"package":"chromadb","version":"1.5.9","id":"PYSEC-2026-3815","reason":"Chroma SimpleRBAC server is not deployed. PostgreSQL and application RBAC own all organisation data; no published patched version."},
+    {"package":"chromadb","version":"1.5.9","id":"PYSEC-2026-3813","reason":"Chroma tenant server APIs are not exposed. Memory and knowledge disabled; no published patched version."}
+  ]
+}

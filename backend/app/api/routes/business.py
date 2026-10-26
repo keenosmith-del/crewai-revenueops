@@ -36,7 +36,14 @@ from app.models.entities import (
     Transaction,
 )
 from app.repositories.records import get, rows
-from app.schemas.requests import Decision, DisputeInput, DraftDecision, DraftInput
+from app.schemas.requests import (
+    CustomerInput,
+    Decision,
+    DisputeInput,
+    DraftDecision,
+    DraftInput,
+    VerifyAccount,
+)
 from app.security.auth import current_user, operator, reviewer
 from app.services import imports, workflows
 from app.services.ledger import audit, disputed, outstanding
@@ -326,3 +333,49 @@ def model_health(user=Depends(current_user)):
         return health()
     except Exception:
         raise HTTPException(503, "Model unavailable or required capabilities absent") from None
+
+
+@router.post("/customers")
+def create_customer(body: "CustomerInput", db=Depends(get_db), user=Depends(operator)):
+    record = Customer(org_id=user.org_id, **body.model_dump())
+    db.add(record)
+    db.flush()
+    audit(db, user, "customer.created", record.id, account=record.account)
+    db.commit()
+    return serialize(record)
+
+
+@router.post("/transactions/{transaction_id}/verify-account")
+def verify_account(
+    transaction_id: str, body: "VerifyAccount", db=Depends(get_db), user=Depends(reviewer)
+):
+    from app.services.ledger import allocated
+
+    db.scalar(select(Organisation).where(Organisation.id == user.org_id).with_for_update())
+    transaction = get(db, Transaction, transaction_id, user.org_id, lock=True)
+    customer = get(db, Customer, body.customer_id, user.org_id)
+    if allocated(db, user.org_id, transaction_id=transaction.id) > 0:
+        raise HTTPException(409, "Allocated payment account cannot be changed")
+    old = transaction.customer_id
+    transaction.customer_id = customer.id
+    audit(
+        db,
+        user,
+        "transaction.account_verified",
+        transaction.id,
+        previous=old,
+        new=customer.id,
+        note=body.note,
+    )
+    db.commit()
+    return present(db, transaction)
+
+
+@router.get("/reports/evaluation")
+def evaluation_report(user=Depends(current_user)):
+    from pathlib import Path
+
+    target = Path(__file__).resolve().parents[4] / "docs/testing/evaluation.json"
+    if not target.exists():
+        return {"status": "not_executed", "reason": "No evaluation artifact in this release"}
+    return json.loads(target.read_text())

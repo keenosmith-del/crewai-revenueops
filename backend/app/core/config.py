@@ -26,7 +26,7 @@ class Settings(BaseSettings):
         if self.app_env == "production":
             if (
                 self.demo_enabled
-                or self.jwt_secret.startswith("local-")
+                or self.jwt_secret.startswith(("local-", "replace-"))
                 or len(self.jwt_secret) < 32
             ):
                 raise ValueError("Production requires demo disabled and a strong JWT secret")

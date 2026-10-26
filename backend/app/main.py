@@ -14,6 +14,7 @@ from sqlalchemy.exc import IntegrityError
 from app.api.routes import auth, business
 from app.core.config import settings
 from app.db.session import SessionLocal
+from app.observability.context import correlation_id
 
 settings.validate_runtime()
 app = FastAPI(title="RevenueOps Intelligence", version="0.1.0")
@@ -31,8 +32,11 @@ attempts = defaultdict(deque)
 @app.middleware("http")
 async def controls(request: Request, call_next):
     correlation = str(uuid4())
+    correlation_id.set(correlation)
     started = time.monotonic()
     if request.method not in ("GET", "HEAD", "OPTIONS"):
+        if int(request.headers.get("content-length", "0")) > 2_100_000:
+            return JSONResponse({"detail": "Request exceeds size limit"}, status_code=413)
         origin = request.headers.get("origin")
         if origin and origin not in settings.cors_origins:
             return JSONResponse({"detail": "Origin not permitted"}, status_code=403)

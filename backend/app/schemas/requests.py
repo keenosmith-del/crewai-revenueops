@@ -33,3 +33,14 @@ class DraftInput(Strict):
 
 class DraftDecision(Strict):
     decision: Literal["approve", "reject"]
+
+
+class CustomerInput(Strict):
+    name: str = Field(min_length=2, max_length=160)
+    account: str = Field(min_length=2, max_length=60, pattern=r"^[A-Za-z0-9_-]+$")
+    email: str = Field(max_length=180, pattern=r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
+
+
+class VerifyAccount(Strict):
+    customer_id: str = Field(max_length=36)
+    note: str = Field(min_length=5, max_length=1000)

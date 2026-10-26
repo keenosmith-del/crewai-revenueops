@@ -1,0 +1,42 @@
+{
+  "execution_id": "9771fed9-d710-4360-b176-77b826b07cde",
+  "mode": "ollama",
+  "adapter": "crewai_native_openai_to_local_ollama",
+  "model": "llama3.2:3b",
+  "status": "completed",
+  "stage": "human_review",
+  "error": null,
+  "duration_ms": 31883,
+  "usage": {
+    "total_tokens": 13656,
+    "prompt_tokens": 12986,
+    "cached_prompt_tokens": 414,
+    "completion_tokens": 670,
+    "reasoning_tokens": 0,
+    "cache_creation_tokens": 0,
+    "successful_requests": 8
+  },
+  "tool_calls": 2,
+  "result": {
+    "investigation_id": "b17414b9-0fae-4f33-a192-87e942b6b9a0",
+    "transaction_id": "probe-payment",
+    "currency": "ZAR",
+    "allocations": [],
+    "summary": "No invoice reference found for probe-payment transaction",
+    "evidence": [
+      {
+        "reference": "transaction:probe-payment",
+        "field": "reference",
+        "value": "No invoice reference"
+      }
+    ],
+    "uncertainty": "low",
+    "recommendation": "request_information",
+    "missing_information": [],
+    "validation_findings": [],
+    "required_human_action": "Verify customer information and invoice details",
+    "draft_message": null
+  },
+  "ledger_mutations": 0,
+  "benchmark_quality_verified": false
+}

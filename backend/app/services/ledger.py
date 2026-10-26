@@ -3,6 +3,7 @@ from decimal import Decimal
 from sqlalchemy import func, select
 
 from app.models.entities import Allocation, Audit, Dispute
+from app.observability.context import correlation_id
 
 
 def allocated(db, org, *, invoice_id=None, transaction_id=None):
@@ -38,6 +39,11 @@ def disputed(db, invoice):
 def audit(db, user, action, record_id, **detail):
     db.add(
         Audit(
-            org_id=user.org_id, actor_id=user.id, action=action, record_id=record_id, detail=detail
+            org_id=user.org_id,
+            **({"correlation_id": correlation_id.get()} if correlation_id.get() else {}),
+            actor_id=user.id,
+            action=action,
+            record_id=record_id,
+            detail=detail,
         )
     )

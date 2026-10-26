@@ -3,12 +3,15 @@ from datetime import date
 from decimal import Decimal
 
 import pytest
+from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
-from app.db.session import Base
+from app.db.session import Base, get_db
+from app.main import app
 from app.models.entities import Customer, Invoice, Organisation, Transaction, User
+from app.security.auth import token
 
 
 @pytest.fixture
@@ -77,3 +80,12 @@ def user(db):
     )
     db.commit()
     return user
+
+
+@pytest.fixture
+def client(db, user):
+    app.dependency_overrides[get_db] = lambda: db
+    with TestClient(app) as c:
+        c.headers["Authorization"] = "Bearer " + token(user)
+        yield c
+    app.dependency_overrides.clear()

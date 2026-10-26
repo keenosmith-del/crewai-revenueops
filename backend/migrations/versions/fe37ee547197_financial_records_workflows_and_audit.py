@@ -376,3 +376,9 @@ def upgrade():
     )
     op.create_index(op.f("ix_tool_calls_org_id"), "tool_calls", ["org_id"], unique=False)
     # ### end Alembic commands ###
+
+
+def downgrade():
+    raise RuntimeError(
+        "Immutable financial history requires backup restore, not destructive downgrade"
+    )
