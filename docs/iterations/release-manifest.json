@@ -2,7 +2,7 @@
   "project": "RevenueOps Intelligence",
   "version": "0.1.0",
   "verification_date": "2026-10-26",
-  "engineering_commit": "5e09ee397438ab90ca92b8b35f494fc039455fc8",
+  "engineering_commit": "8d48c26ac1e351a4357a012f3893a7e2e06a208e",
   "iterations": [
     {
       "iteration": "iteration-001",
@@ -43,6 +43,104 @@
       "iteration": "iteration-008",
       "commit": "5e09ee397438ab90ca92b8b35f494fc039455fc8",
       "subject": "iteration-008: complete verification and handover"
+    },
+    {
+      "iteration": "iteration-009",
+      "commit": "8d48c26ac1e351a4357a012f3893a7e2e06a208e",
+      "subject": "focused CI correction and reproducible ambiguous-payment evaluation",
+      "stages": [
+        {
+          "stage": 1,
+          "commit": "9bacbe4f4a04d279477e891b5edbd62bff9ebd11",
+          "subject": "iteration-009: correct PostgreSQL CI service configuration",
+          "ci": {
+            "commit": "9bacbe4f4a04d279477e891b5edbd62bff9ebd11",
+            "conclusion": "success",
+            "event": "push",
+            "jobs": [
+              {
+                "conclusion": "success",
+                "name": "containers",
+                "status": "completed",
+                "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40350394359/job/121668554125"
+              },
+              {
+                "conclusion": "success",
+                "name": "browser",
+                "status": "completed",
+                "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40350394359/job/121668554712"
+              },
+              {
+                "conclusion": "success",
+                "name": "secrets",
+                "status": "completed",
+                "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40350394359/job/121668554721"
+              },
+              {
+                "conclusion": "success",
+                "name": "frontend",
+                "status": "completed",
+                "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40350394359/job/121668554931"
+              },
+              {
+                "conclusion": "success",
+                "name": "backend",
+                "status": "completed",
+                "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40350394359/job/121668555084"
+              }
+            ],
+            "run_id": 40350394359,
+            "status": "completed",
+            "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40350394359"
+          }
+        },
+        {
+          "stage": 2,
+          "commit": "8d48c26ac1e351a4357a012f3893a7e2e06a208e",
+          "subject": "iteration-009: expand CrewAI evaluation evidence",
+          "ci": {
+            "commit": "8d48c26ac1e351a4357a012f3893a7e2e06a208e",
+            "conclusion": "success",
+            "event": "push",
+            "jobs": [
+              {
+                "conclusion": "success",
+                "name": "containers",
+                "status": "completed",
+                "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40354134960/job/121681894821"
+              },
+              {
+                "conclusion": "success",
+                "name": "backend",
+                "status": "completed",
+                "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40354134960/job/121681894913"
+              },
+              {
+                "conclusion": "success",
+                "name": "browser",
+                "status": "completed",
+                "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40354134960/job/121681894959"
+              },
+              {
+                "conclusion": "success",
+                "name": "secrets",
+                "status": "completed",
+                "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40354134960/job/121681894964"
+              },
+              {
+                "conclusion": "success",
+                "name": "frontend",
+                "status": "completed",
+                "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40354134960/job/121681895087"
+              }
+            ],
+            "run_id": 40354134960,
+            "status": "completed",
+            "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40354134960"
+          }
+        }
+      ],
+      "documentation_stage": "Awaiting its own commit/push/hosted verification; no future outcome asserted"
     }
   ],
   "local_images": {
@@ -64,7 +162,7 @@
     }
   },
   "checks": {
-    "postgresql_and_release_tests_passed": 78,
+    "postgresql_and_release_tests_passed": 87,
     "backend_statement_coverage_percent": 81,
     "frontend_component_tests_passed": 5,
     "isolated_browser_tests_passed": 5,
@@ -76,7 +174,20 @@
     "live_large_case_failures_recorded": 2,
     "residual_reviewed_dependency_advisories": 4,
     "secret_scan": "passed",
-    "workflow_syntax": "passed"
+    "workflow_syntax": "passed",
+    "backend_tests_hosted_passed": 67,
+    "release_tests_hosted_passed": 20,
+    "evaluation_tests_local_passed": 10,
+    "focused_safety_tests_local_passed": 57,
+    "backend_statement_coverage_scope": "81% last measured at Iteration 008; not remeasured in 009",
+    "ambiguous_cases": 4,
+    "ambiguous_baseline_correct": 1,
+    "ambiguous_assisted_correct": 0,
+    "ambiguous_live_failures": 2,
+    "ambiguous_read_tool_calls": 43,
+    "ambiguous_total_latency_ms": 489037,
+    "ambiguous_ledger_writes": 0,
+    "hosted_all_jobs_success": true
   },
   "status": {
     "implemented": true,
@@ -84,11 +195,12 @@
     "mocked_inference_used_for_contract_tests": true,
     "live_local_model_verified_on_selected_small_cases": true,
     "hosted_model_verified": false,
-    "hosted_ci_verified": false,
+    "hosted_ci_verified": true,
     "deployment_prepared": true,
     "deployed": false,
     "production_verified": false,
-    "pushed": false
+    "pushed": true,
+    "model_accuracy_improvement_demonstrated": false
   },
   "running_local_services": {
     "web": "http://localhost:5174",
@@ -100,9 +212,63 @@
   "evidence": "docs/testing/results.md",
   "handover": "docs/portfolio/handover.md",
   "limitations": [
-    "Larger model cases timed out or failed validation; no general accuracy improvement claim.",
-    "Four unpatched unused Chroma server advisories remain under exact-version expiring review.",
-    "Hosted CI, registry publish, protected environment activation and staging/rollback have not executed.",
-    "The metadata commit records existing engineering hashes and does not attempt a self-referential hash."
-  ]
+    "Four synthetic ambiguous cases and one local model attempt each: baseline 1/4, assisted 0/4; no improvement demonstrated.",
+    "Two supported matches missed, one timeout and one inference exception; no ledger writes.",
+    "Four unpatched unused Chroma server advisories retain unchanged exact-version exceptions expiring 2026-11-26.",
+    "Hosted CI and linux/amd64 image builds verified; registry publish, protected environment activation, staging/rollback and production remain unexecuted.",
+    "Recorded verification is bound to exact existing commit/run receipts. A documentation commit cannot contain its own SHA or a future run result."
+  ],
+  "current_iteration": "iteration-009",
+  "local_images_snapshot_iteration": "iteration-008; not rebuilt locally for focused Iteration 009",
+  "verified_remote_main": {
+    "commit": "8d48c26ac1e351a4357a012f3893a7e2e06a208e",
+    "conclusion": "success",
+    "event": "push",
+    "jobs": [
+      {
+        "conclusion": "success",
+        "name": "containers",
+        "status": "completed",
+        "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40354134960/job/121681894821"
+      },
+      {
+        "conclusion": "success",
+        "name": "backend",
+        "status": "completed",
+        "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40354134960/job/121681894913"
+      },
+      {
+        "conclusion": "success",
+        "name": "browser",
+        "status": "completed",
+        "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40354134960/job/121681894959"
+      },
+      {
+        "conclusion": "success",
+        "name": "secrets",
+        "status": "completed",
+        "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40354134960/job/121681894964"
+      },
+      {
+        "conclusion": "success",
+        "name": "frontend",
+        "status": "completed",
+        "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40354134960/job/121681895087"
+      }
+    ],
+    "run_id": 40354134960,
+    "status": "completed",
+    "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40354134960"
+  },
+  "prior_remote_history": {
+    "original_iterations_commit": "ccd52b98f1a6de0559e3281afafe03370c000513",
+    "initial_failed_run": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40349229404",
+    "note": "Iterations 001\u2013008 already existed on remote main when 009 began; new stage pushes were independently verified."
+  },
+  "deployment_observation": {
+    "deploy_workflow_runs": 0,
+    "github_environments": 0,
+    "registry_publish": false,
+    "provisioning": false
+  }
 }

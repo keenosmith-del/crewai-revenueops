@@ -34,8 +34,8 @@
     separate mocked contracts, actual small-model success and 3-case comparison. Disclose
     that larger attempts timed out or failed validation without changing financial balances.
 13. Show verify.yml and deploy-staging.yml, exact local results and release manifest. The
-    GitHub badge points at the prepared workflow; hosted CI is unverified until an authorised
-    push produces a run. Staging requires external configuration and independent approval;
+    GitHub badge points at the actual verification workflow, successfully exercised by
+    Iteration 009 pushes; use the iteration record for exact hosted run evidence. Staging requires external configuration and independent approval;
     nothing has been provisioned or deployed.
 
 Automated demonstration: five Playwright cases against a separate disposable PostgreSQL

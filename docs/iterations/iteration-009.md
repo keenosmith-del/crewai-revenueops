@@ -21,12 +21,12 @@ Local validation and actual pushed commit/run outcome will be appended after exe
 A commit cannot record its own hash or a future hosted conclusion; the next evidence
 commit records those observed facts. No hosted success is claimed in advance.
 
-## Stage 2 — ambiguous investigation evaluation (locally verified; hosted check follows push)
+## Stage 2 — ambiguous investigation evaluation (verified)
 Use identical evidence and independently specified ground truth for baseline and assisted
 runs. Require actual local inference for live claims; retain errors, tool calls and latency.
 Keep all evaluation data synthetic and all agent tools read-only. No financial posting.
 
-## Stage 3 — documentation and final release state (pending)
+## Stage 3 — documentation and final release state (local checks; hosted verification follows push)
 Update README, results, handover, engineering summary and release manifest with observed
 remote history and successful hosted verification. Final working tree must be clean and
 intended commits on remote main, with a successful verification run on the final SHA.
@@ -76,3 +76,21 @@ intended commits on remote main, with a successful verification run on the final
   docs/testing/iteration-009. No agent prompt, model, guardrail or financial policy tuned.
 - Stage 1 hosted logs additionally confirm 58 backend tests, 20 release tests, 5 frontend
   tests and 5 browser workflows passed; zero unreviewed dependency findings.
+
+### Stage 2 verified remote result
+- Commit: `8d48c26ac1e351a4357a012f3893a7e2e06a208e`.
+- Verified exact SHA on origin/main by ls-remote and GitHub commits/main API.
+- Hosted run: https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40354134960
+- **Success**, all five required jobs. Hosted tests: **67 backend passed** (149 warnings,
+  9.75s), **20 release passed** (0.12s), **5 frontend passed**, **5 browser passed** (24.4s).
+- Baseline smoke for all four new cases, migrations, lint/format, contracts, advisory
+  policy, secrets and both container builds passed. Live inference was local only, not CI.
+
+### Stage 3 documentation checks before push
+README, results, handover, portfolio engineering and manifest now reflect pushed/verified
+CI rather than the earlier local-only snapshot. Historical 81% coverage is explicitly
+labelled Iteration 008. Four-case 0/4 model results qualify the earlier easy 3/3 probes.
+Current staging guide/demo wording is synchronised: CI verified, deployment unexecuted.
+Read-only remote checks found zero deploy-staging.yml runs and zero environments.
+Exact final documentation SHA/run will be recorded after actual push and hosted success.
+No self-referential commit hash or predicted future success is claimed.

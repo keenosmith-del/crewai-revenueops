@@ -2,28 +2,26 @@
 
 | Check | Actual outcome |
 |---|---|
-| Final PostgreSQL suite | **78 passed** (58 backend/financial/agent/worker/security/evaluation checks + 20 release checks), 113 framework/deprecation warnings; 57.34s |
-| Backend statement coverage | **81%** (1,290 statements); financial workflows 93%, matching engine 94%, imports 81%, worker 68% |
-| Ruff lint and format | Passed for backend, scripts and release tests |
-| Frontend lint | Passed |
-| Frontend components | **5 passed** |
-| Frontend production build | Passed, Vite 7.3.7 |
-| Playwright | **5 passed**, 14.7s; real API/PostgreSQL in a dedicated disposable test database |
-| Migration upgrade/check | Clean database upgrade applied; current schema reports no new operations |
-| Dependency consistency | Host and production API image pip check passed |
-| Frontend vulnerability audit | Zero vulnerabilities at verification time |
-| Python advisory check | Four documented Chroma server advisories remain; zero unreviewed findings; expiring exception review |
-| Secret scan | Official checksum-verified Gitleaks scanned committed history: no leaks; final scan rerun after engineering commit |
-| Workflow validation | Official checksum-verified actionlint **1.7.12**, both workflows passed |
-| Container builds | Production API/worker and web images built successfully on local arm64 Docker |
-| Container runtime | PostgreSQL, API, worker and Nginx web running; API health and database connectivity passed |
-| Browser/API smoke on production images | Web 200 + CSP, health OK, anonymous identity 401, synthetic authenticated reads, Decimal strings, evaluation route 200 |
-| Backup/restore | Separate restored DB matched source: 155 invoices, 121 transactions, 2 allocations, total allocations 2629.000 |
-| Hosted GitHub Actions | **Not executed**; read-only inspection found zero runs |
-| GitHub staging environment | **Not configured**; read-only inspection found zero environments |
-| Registry publish / deployment / production | **Not executed** |
+| PostgreSQL/full suite, Iteration 009 | **87 passed**, 149 compatibility warnings, 21.44s locally; same 67 backend + 20 release checks passed on hosted CI |
+| Focused financial/security/agent/worker checks | **57 passed**, 113 warnings, 7.77s on real PostgreSQL |
+| Evaluation tests | **10 passed**, 37 warnings, 3.75s; actual Flow with explicitly mocked contract inference included |
+| Last measured coverage (Iteration 008) | **81%** over 1,290 statements at that revision; not a newly measured Iteration 009 coverage claim |
+| Ruff lint / format and actionlint 1.7.12 | Passed locally and in the applicable hosted steps |
+| Frontend lint / components / production build | Passed on GitHub; **5 component tests** |
+| Playwright | **5 passed** on GitHub against its isolated PostgreSQL service |
+| Migration upgrade/check and pip check | Passed on GitHub |
+| Frontend vulnerability audit | Zero vulnerabilities in the hosted audit |
+| Python advisory check | Same four exact-version Chroma server exceptions, no new/unreviewed findings; expiry remains 2026-11-26 |
+| Secret scan | Hosted Gitleaks job passed |
+| Container builds | API/worker and web images built successfully on hosted Ubuntu/linux-amd64; no registry publish |
+| Hosted Stage 1 CI | **All five jobs passed**, 9bacbe4f4a04d279477e891b5edbd62bff9ebd11, [run 40350394359](https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40350394359) |
+| Hosted Stage 2 CI | **All five jobs passed**, 8d48c26ac1e351a4357a012f3893a7e2e06a208e, [run 40354134960](https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40354134960) |
+| Initial failed hosted run | [40349229404](https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40349229404): PostgreSQL health command quoting split -U into Docker arguments; corrected in Stage 1 |
+| GitHub environment / deploy workflow | No environment configured; zero deploy-staging.yml runs at Iteration 009 inspection |
+| Registry publish / staging / production | **Not executed** |
+| Earlier local runtime/restore evidence (Iteration 008) | Production images served synthetic authenticated reads; restored financial counts 155 invoices / 121 transactions / 2 allocations, aggregate 2629.000; not repeated or rebuilt in this focused iteration |
 
-Coverage includes automated tests only; real model subprocesses and browser execution
+The historical coverage measurement includes automated tests only; real model subprocesses and browser execution
 are not folded into that percentage. Uncovered provider/worker process supervision and
 operator CLI paths remain review areas. Warnings come mainly from installed CrewAI
 compatibility internals and Starlette's current httpx TestClient deprecation; they are
@@ -36,7 +34,24 @@ small and constructed; these figures are regression evidence, not field accuracy
 The separate original 150-invoice/120-transaction seed has exact expected outcomes in
 data/synthetic/expected-outcomes.json. No seed proposals post automatically.
 
-## Genuine local model evidence
+## Iteration 009 harder investigation benchmark
+Four frozen synthetic cases require remittance interpretation or recognising conflicting/
+insufficient evidence. Labels are excluded from prompts; per-case evidence hashes match.
+Baseline **1/4** exact decisions, assisted **0/4**. Two supported matches were missed by
+abstention, one case timed out at 240s and one failed with a generic Exception during
+CrewAI inference. All failures count against accuracy. Actual read-tool calls **43**, summed
+measured case latency **489037ms**. Both approaches recovered zero supported allocation
+sets; assisted precision is undefined because no accepted allocation output was produced.
+No ledger allocation or communication occurred. The financial-policy validator remains
+independent of the model and rejected outputs are not silently replaced.
+
+Per-case calls / latency: alias 8 / 72430ms; combinations 13 / 61237ms; conflicting dispute
+5 / 240047ms; insufficient/injected evidence 17 / 115323ms. Exact model digest, environment,
+findings, partial task events and method are in [iteration-009](iteration-009/methodology.md).
+One run of four hand-authored cases cannot establish representative accuracy; these results
+show no improvement and substantially qualify the earlier easy-abstention successes.
+
+## Earlier genuine local model evidence (Iteration 008)
 - Initial larger case: TimeoutError, 1 recorded tool call, no completed recommendation.
 - Small persisted case: two-agent crew completed in **31,883ms**, 2 tool calls, result
   request_information at human_review; no allocations. CrewAI reported 13,656 tokens;
@@ -50,7 +65,7 @@ data/synthetic/expected-outcomes.json. No seed proposals post automatically.
 
 Exact structured artifacts: live-model.json, live-small-model.json,
 live-comparison.json and live-main-model.json. No hosted model was invoked. Small live
-success and larger-case failures must both be disclosed during a demonstration.
+successes, larger-case failures and the harder Iteration 009 failures must all be disclosed.
 
 ## Browser and visual evidence
 Five workflows verify persisted review/allocation, invoice and transaction CSV imports,
@@ -64,6 +79,8 @@ navigation and loaded data. No accessibility compliance certification or load te
 ## Reproduction and truthful boundaries
 Commands in methodology.md and deployment/local.md reproduce the checks. Test fixtures
 never call a paid provider. Mocked contract tests genuinely execute CrewAI orchestration,
-but mocked inference is not live inference. Local arm64 images do not establish hosted
-linux/amd64 builds or staging correctness. No push, remote environment activation,
-external messaging, payment execution or paid infrastructure provisioning occurred.
+but mocked inference is not live inference. Hosted linux/amd64 builds and push CI are now
+verified by the linked runs. Neither those builds nor local checks establish staging or
+production correctness. No deployment/environment activation, external messaging, payment
+execution, paid model or paid infrastructure provisioning occurred. Earlier local-only
+statements were the Iteration 008 snapshot, superseded by this observed pushed CI state.

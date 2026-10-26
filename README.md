@@ -31,14 +31,22 @@ the baseline application. All included business records and identities are synth
 
 See [actual results](docs/testing/results.md), [handover](docs/portfolio/handover.md) and
 [release manifest](docs/iterations/release-manifest.json) for exact evidence and Git hashes.
-Local PostgreSQL, framework contracts, browser workflows, builds and a small genuine
-Ollama crew have been exercised. Live comparison: deterministic baseline and CrewAI both
-handled 3/3 selected exceptions safely. Larger model cases timed out or failed validation;
-no general accuracy improvement is claimed. Mocked inference is labelled separately.
+Iteration 009 is pushed to the existing origin/main. [Hosted verification](https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40354134960)
+passed all five jobs: backend, browser, frontend, containers and secrets. The PostgreSQL
+service health-command quoting is corrected in both jobs. The current local suite passes
+**87 tests**, plus **5 frontend tests** and **5 browser workflows** verified on GitHub.
 
-GitHub Actions CI and a separately gated existing-staging deployment workflow are prepared.
-**No push, hosted CI run, environment activation or deployment has occurred.** The badge
-links to the real workflow path and does not imply a successful hosted run.
+The 13-case deterministic regression set remains 13/13. The earlier three-case live probe
+was an easy safe-abstention check. A new [four-case ambiguous-payment benchmark](docs/testing/iteration-009/methodology.md)
+uses the same evidence and independent ground truth for both approaches: **baseline 1/4,
+actual local CrewAI 0/4**. The model missed two supported matches, timed out once and failed
+once; 43 read-tool calls, zero ledger postings. No model improvement is demonstrated.
+Mocked contract inference is labelled separately from this actual local run.
+
+Staging CD remains prepared only. **No deployment, environment activation, registry publish
+or paid-model invocation occurred.** Commits, exact hosted run receipts and their scope
+are recorded in [Iteration 009](docs/iterations/iteration-009.md) and the release manifest.
+The badge reports the actual main-branch workflow; successful CI does not certify production.
 
 Python security review retains four unpatched ChromaDB server advisories in a transitive
 CrewAI dependency. No Chroma server, memory or knowledge feature is enabled. Exact scoped,
@@ -85,6 +93,7 @@ before introducing real financial data.
 .venv/bin/pytest -q backend/tests tests/release
 TEST_DATABASE_URL=postgresql+psycopg://revenueops:local-only@localhost:55433/revenueops_test .venv/bin/pytest -q backend/tests tests/release
 PYTHONPATH=backend .venv/bin/python -m app.evaluations.runner
+PYTHONPATH=backend .venv/bin/python -m app.evaluations.investigation --baseline
 .venv/bin/python scripts/check_contracts.py
 .venv/bin/python scripts/check_dependencies.py
 npm --prefix frontend run lint
@@ -115,4 +124,4 @@ credit notes, general-ledger posting, email transport, SSO/MFA/password recovery
 availability or large-scale performance certification. List pagination currently filters
 in memory for this demonstration dataset. AI collection drafts require one eligible
 invoice in scope; multi-invoice follow-ups use explicit reviewed template drafts. Live
-model reliability needs broader evaluation. Production deployment remains unverified.
+model reliability remains poor on the harder four-case evaluation and needs broader evaluation. Production deployment remains unverified.

@@ -48,18 +48,24 @@ No redundant mutable balance is trusted. PostgreSQL is primary; SQLite is confin
 isolated fast tests and the known-truth benchmark.
 
 ## Verification, evaluation and Git evidence
-Final verification: **78 PostgreSQL/release tests passed, 81% backend statement coverage,
-5 frontend tests, 5 browser workflows**, lint/format/build/contracts, schema checks,
-production container builds/runtime, backup restore, actionlint and secret scan. Exact
-results and warnings are in docs/testing/results.md. Eight implementation iterations and
-full hashes are in docs/iterations/release-manifest.json; final metadata records the
-engineering commit after it exists. No force-push or unrelated-change discard occurred.
+Iteration 009 verification: **87 PostgreSQL/release tests passed locally** (67 backend,
+20 release), plus **5 frontend tests and 5 isolated browser workflows passed on GitHub**.
+All five hosted jobs passed on the CI correction and evaluation stages; exact receipts
+and hashes are in docs/iterations/iteration-009.md and release-manifest.json. Historical
+Iteration 008 coverage was 81%; no new coverage percentage was measured for this iteration.
+Migrations, financial invariants, organisation isolation, idempotency, read-only tools,
+worker recovery, API contracts, dependency checks, secrets and container builds are verified.
 
-Deterministic benchmark: 13/13 constructed cases, with exact Decimal proposal outcomes.
-Live local comparison: baseline and CrewAI both handled 3/3 selected exceptions safely.
-A small real two-agent case completed with two tool calls. Two larger attempts failed
-(timeout and validation); those failures are retained. These results demonstrate runtime
-integration and conservative failure handling, not broad reasoning accuracy or superiority.
+The 13-case deterministic regression set remains 13/13. The new four-case investigation
+benchmark uses identical evidence and independent ground truth: **baseline 1/4, assisted
+0/4**. Both supported matches were missed by model abstention; the two other cases timed
+out or failed. 43 actual read-tool calls, 489037ms total measured case latency, zero ledger
+writes. The earlier successful small crew and three easy abstention cases remain historical
+evidence, not proof of useful ambiguous-match recovery. No model improvement is claimed.
+Model digest, concise outputs, failures and limitations are preserved without hidden reasoning.
+
+Normal pushes and actual GitHub branch/run inspection verify the stage commits on main.
+No force-push, history rewriting, failing-check bypass or unrelated changes occurred.
 
 ## Security and operations
 Live-role RBAC, organisation scoping, signed expiring HttpOnly/SameSite cookies, Argon2,
@@ -82,11 +88,15 @@ requires independent environment review and exact successful main CI source, pub
 and promotes digest references, verifies revision labels, rejects baseline drift and saves
 recovery evidence. Rollback uses a reviewed prior image pair, not a rebuild or DB downgrade.
 
-Read-only remote inspection found zero Actions runs and zero environments. No push was
-authorised, so **hosted CI is unverified**. CD is prepared only; no staging host, credentials,
-registry publish, protected environment or infrastructure was activated. No deployment or
-production verification occurred. This is a credible locally tested engineering release,
-not a certification to operate real receivables without further review.
+Hosted Verify RevenueOps is now **verified successful**, including the fixed PostgreSQL
+services and linux/amd64 container builds. The latest documented code/evaluation receipt:
+https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40354134960 at
+8d48c26ac1e351a4357a012f3893a7e2e06a208e. The final documentation receipt is recorded
+in the iteration/release records after its own push and successful run.
+
+CD remains prepared only. Inspection found no configured GitHub environment and zero
+deployment-workflow runs. No registry publish, staging host, credentials, infrastructure
+or production operation was activated. Successful CI is not production certification.
 
 ## Startup and model configuration
 Exact native/container commands, sign-in and isolated browser setup: docs/deployment/local.md.
@@ -110,5 +120,7 @@ List pagination currently filters in memory; optimise SQL queries before large d
 AI collection drafts require one eligible invoice in scope; ordinary reviewed templates
 work per invoice. Larger-case model reliability and comprehensive semantic assertions
 need further evaluation. Worker process supervision/provider edge cases are not fully
-covered despite persisted resume/fencing tests and real local probes. Hosted CI,
-linux/amd64 registry builds and staging/rollback require approved external activation.
+covered despite persisted resume/fencing tests and real local probes. Hosted CI and
+linux/amd64 image builds passed; registry publishing and staging/rollback remain unexecuted
+and require separate authorisation/configuration. The current local model is unreliable
+on the new ambiguous set; financial human review and strict validators remain mandatory.

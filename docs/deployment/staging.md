@@ -55,7 +55,9 @@ never reported as deployed. Do not reset a staging DB merely to restore an image
 
 ## Verification status
 Release guard/manifest safety logic tested locally using synthetic responses. Workflow
-syntax checked with official actionlint. No environment, key, host or registry credentials
-were configured. Read-only remote inspection found zero Actions runs and zero GitHub
-environments at the time of implementation. No workflow dispatch, push or deployment
-was authorised or executed. Hosted CI and staging are prepared, not live verified.
+syntax checked with official actionlint. No environment, key, host or registry credentials were configured. Iteration 008's initial
+read-only snapshot had zero Actions runs and environments; Iteration 009 pushed and
+verified the actual main-branch verification workflow successfully. See the current
+iteration/release receipts for exact SHAs and Actions URLs. The deployment workflow still
+has zero runs and no GitHub environment was configured. No deployment, registry publish,
+SSH promotion or paid provisioning occurred. Hosted CI is verified; staging is prepared only.
