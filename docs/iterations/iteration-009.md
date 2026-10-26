@@ -26,7 +26,7 @@ Use identical evidence and independently specified ground truth for baseline and
 runs. Require actual local inference for live claims; retain errors, tool calls and latency.
 Keep all evaluation data synthetic and all agent tools read-only. No financial posting.
 
-## Stage 3 — documentation and final release state (local checks; hosted verification follows push)
+## Stage 3 — documentation and release state (verified)
 Update README, results, handover, engineering summary and release manifest with observed
 remote history and successful hosted verification. Final working tree must be clean and
 intended commits on remote main, with a successful verification run on the final SHA.
@@ -94,3 +94,32 @@ Current staging guide/demo wording is synchronised: CI verified, deployment unex
 Read-only remote checks found zero deploy-staging.yml runs and zero environments.
 Exact final documentation SHA/run will be recorded after actual push and hosted success.
 No self-referential commit hash or predicted future success is claimed.
+
+### Stage 3 verified remote result
+- Commit: `4c78151ef9cb043026403d0371d1d7e163dcd062`.
+- Exact normal-push SHA verified on origin/main by ls-remote and GitHub commits/main API.
+- Hosted run: https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40355395067
+- **Success**, all five jobs: backend, browser, frontend, containers and secrets.
+- Same 67 backend + 20 release + 5 frontend + 5 browser checks passed, along with
+  migrations, Ruff, deterministic evaluation smoke, advisory policy and image builds.
+- Documentation links/JSON, actionlint, diff review and local Gitleaks passed. Protected
+  financial/agent/flow/provider/security/frontend source and advisory policy are byte-for-byte
+  unchanged from Iteration 008; exact comparison evidence is in safety-review.json.
+
+## Completed stage chain and final receipt boundary
+| Stage | Exact commit | Successful hosted verification |
+|---|---|---|
+| PostgreSQL CI correction | 9bacbe4f4a04d279477e891b5edbd62bff9ebd11 | https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40350394359 |
+| Ambiguous-case evaluation | 8d48c26ac1e351a4357a012f3893a7e2e06a208e | https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40354134960 |
+| Documentation synchronisation | 4c78151ef9cb043026403d0371d1d7e163dcd062 | https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40355395067 |
+
+A final receipt-only commit records Stage 3 after observing its successful run. It changes
+no application or evaluation behaviour. Its own exact hash and final hosted run are
+verified after push and reported in the final response/GitHub main history; embedding a
+commit's own hash or future run outcome here would be self-referential and unverifiable.
+
+Remaining limits: four constructed cases/one run each, 0/4 assisted exact decisions,
+missed supported matches, one timeout and one generic inference exception. This model
+has not demonstrated useful ambiguous-match recovery. Four unchanged unpatched Chroma
+server advisories remain under expiring review. No staging/production deployment,
+registry publish, paid model, paid infrastructure, communications or AssessFlow changes.

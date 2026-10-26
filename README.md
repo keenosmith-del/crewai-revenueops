@@ -46,6 +46,7 @@ Mocked contract inference is labelled separately from this actual local run.
 Staging CD remains prepared only. **No deployment, environment activation, registry publish
 or paid-model invocation occurred.** Commits, exact hosted run receipts and their scope
 are recorded in [Iteration 009](docs/iterations/iteration-009.md) and the release manifest.
+The documentation stage also [passed independently](https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40355395067).
 The badge reports the actual main-branch workflow; successful CI does not certify production.
 
 Python security review retains four unpatched ChromaDB server advisories in a transitive

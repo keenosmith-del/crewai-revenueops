@@ -91,8 +91,9 @@ recovery evidence. Rollback uses a reviewed prior image pair, not a rebuild or D
 Hosted Verify RevenueOps is now **verified successful**, including the fixed PostgreSQL
 services and linux/amd64 container builds. The latest documented code/evaluation receipt:
 https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40354134960 at
-8d48c26ac1e351a4357a012f3893a7e2e06a208e. The final documentation receipt is recorded
-in the iteration/release records after its own push and successful run.
+8d48c26ac1e351a4357a012f3893a7e2e06a208e. Documentation commit 4c78151ef9cb043026403d0371d1d7e163dcd062 also passed all five jobs:
+https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40355395067. Exact stage
+receipts are recorded after observing their successful pushes and hosted runs.
 
 CD remains prepared only. Inspection found no configured GitHub environment and zero
 deployment-workflow runs. No registry publish, staging host, credentials, infrastructure

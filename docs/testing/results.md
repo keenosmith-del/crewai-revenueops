@@ -16,6 +16,7 @@
 | Container builds | API/worker and web images built successfully on hosted Ubuntu/linux-amd64; no registry publish |
 | Hosted Stage 1 CI | **All five jobs passed**, 9bacbe4f4a04d279477e891b5edbd62bff9ebd11, [run 40350394359](https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40350394359) |
 | Hosted Stage 2 CI | **All five jobs passed**, 8d48c26ac1e351a4357a012f3893a7e2e06a208e, [run 40354134960](https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40354134960) |
+| Hosted documentation-stage CI | **All five jobs passed**, 4c78151ef9cb043026403d0371d1d7e163dcd062, [run 40355395067](https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40355395067) |
 | Initial failed hosted run | [40349229404](https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40349229404): PostgreSQL health command quoting split -U into Docker arguments; corrected in Stage 1 |
 | GitHub environment / deploy workflow | No environment configured; zero deploy-staging.yml runs at Iteration 009 inspection |
 | Registry publish / staging / production | **Not executed** |

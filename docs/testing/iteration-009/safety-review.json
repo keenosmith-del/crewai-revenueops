@@ -1,0 +1,30 @@
+{
+  "reviewed_date": "2026-10-26",
+  "base_commit": "ccd52b98f1a6de0559e3281afafe03370c000513",
+  "reviewed_commit": "4c78151ef9cb043026403d0371d1d7e163dcd062",
+  "protected_paths": [
+    "backend/app/accounting",
+    "backend/app/reconciliation",
+    "backend/app/agents",
+    "backend/app/flows",
+    "backend/app/services",
+    "backend/app/providers",
+    "backend/app/workers",
+    "backend/app/security",
+    "backend/app/api",
+    "backend/app/models",
+    "frontend",
+    "docs/security/dependency-exceptions.json"
+  ],
+  "application_and_exception_policy_unchanged": true,
+  "advisory_exceptions_sha256": "26b0c7511a63b87d7dc64fa8206ac2a5be4e208f2870b106cafde6c32375395b",
+  "advisory_exception_count": 4,
+  "advisory_expiry": "2026-11-26",
+  "exception_scope_or_expiry_broadened": false,
+  "focused_postgresql_safety_tests_passed": 57,
+  "full_postgresql_release_tests_passed": 87,
+  "benchmark_operational_db_used": false,
+  "benchmark_ledger_allocations_written": 0,
+  "deployment_workflow_runs_observed": 0,
+  "github_environments_observed": 0
+}
