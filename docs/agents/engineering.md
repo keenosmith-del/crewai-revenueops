@@ -95,3 +95,12 @@ Evaluation observes guardrail rejections separately from inference failures and 
 unknown usage. See docs/testing/iteration-010/methodology.md and iteration-010.md for limits.
 The APIs follow CrewAI 1.15.30 official Tasks, Tools and Agents documentation; the installed
 version is pinned and exercised by actual CrewAI contract tests, with labelled mock inference.
+
+
+Observed 010 limitation: clearer tools achieve 24/24 successful reads across eleven
+live cases, but nine cases fail structured output. The full-schema prompt does not solve
+3B typed findings and adds prompt text. Only two holdouts complete independent review;
+all four fixed cases fail before the first task completes. One supported pair is recovered
+from a required two-pair split; its exact decision is still incorrect. Keep this regression
+visible. Investigate safe field-level error telemetry and a separately authorised stronger
+local-model comparison before further tuning; never relax the schema or citations.

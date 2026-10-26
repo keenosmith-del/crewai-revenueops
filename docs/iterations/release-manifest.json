@@ -2,7 +2,7 @@
   "project": "RevenueOps Intelligence",
   "version": "0.1.0",
   "verification_date": "2026-10-26",
-  "engineering_commit": "8d48c26ac1e351a4357a012f3893a7e2e06a208e",
+  "engineering_commit": "2a1029838a38cb9dafa2f38dbfdbf635357ce619",
   "iterations": [
     {
       "iteration": "iteration-001",
@@ -271,8 +271,46 @@
             ],
             "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40369553647"
           }
+        },
+        {
+          "stage": 2,
+          "subject": "evidence contracts and evaluation reliability",
+          "commit": "2a1029838a38cb9dafa2f38dbfdbf635357ce619",
+          "ci": {
+            "commit": "2a1029838a38cb9dafa2f38dbfdbf635357ce619",
+            "conclusion": "success",
+            "jobs": [
+              {
+                "conclusion": "success",
+                "name": "containers",
+                "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40370217830/job/121738621592"
+              },
+              {
+                "conclusion": "success",
+                "name": "frontend",
+                "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40370217830/job/121738622042"
+              },
+              {
+                "conclusion": "success",
+                "name": "backend",
+                "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40370217830/job/121738622057"
+              },
+              {
+                "conclusion": "success",
+                "name": "browser",
+                "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40370217830/job/121738622064"
+              },
+              {
+                "conclusion": "success",
+                "name": "secrets",
+                "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40370217830/job/121738622129"
+              }
+            ],
+            "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40370217830"
+          }
         }
-      ]
+      ],
+      "status": "Stages 1 and 2 pushed and hosted verified; evaluation/documentation stage pending push"
     }
   ],
   "local_images": {
@@ -294,7 +332,7 @@
     }
   },
   "checks": {
-    "postgresql_and_release_tests_passed": 87,
+    "postgresql_and_release_tests_passed": 100,
     "backend_statement_coverage_percent": 81,
     "frontend_component_tests_passed": 5,
     "isolated_browser_tests_passed": 5,
@@ -307,7 +345,7 @@
     "residual_reviewed_dependency_advisories": 4,
     "secret_scan": "passed",
     "workflow_syntax": "passed",
-    "backend_tests_hosted_passed": 67,
+    "backend_tests_hosted_passed": 80,
     "release_tests_hosted_passed": 20,
     "evaluation_tests_local_passed": 10,
     "focused_safety_tests_local_passed": 57,
@@ -320,7 +358,17 @@
     "ambiguous_total_latency_ms": 489037,
     "ambiguous_ledger_writes": 0,
     "hosted_all_jobs_success": true,
-    "legacy_live_comparison_scope": "Iteration 008 three easy safe-abstention cases; superseded for ambiguous-match claims by the separate four-case 009 benchmark"
+    "legacy_live_comparison_scope": "Iteration 008 three easy safe-abstention cases; superseded for ambiguous-match claims by the separate four-case 009 benchmark",
+    "iteration_010_fixed_exact": 0,
+    "iteration_010_fixed_cases": 4,
+    "iteration_010_holdout_exact": 1,
+    "iteration_010_holdout_cases": 7,
+    "iteration_010_schema_failures": 9,
+    "iteration_010_tool_successes": 24,
+    "iteration_010_tool_calls": 24,
+    "iteration_010_supported_pairs_recovered": 1,
+    "iteration_010_supported_pairs_expected": 6,
+    "iteration_010_ledger_writes": 0
   },
   "status": {
     "implemented": true,
@@ -345,45 +393,47 @@
   "evidence": "docs/testing/results.md",
   "handover": "docs/portfolio/handover.md",
   "limitations": [
-    "Four synthetic ambiguous cases and one local model attempt each: baseline 1/4, assisted 0/4; no improvement demonstrated.",
-    "Two supported matches missed, one timeout and one inference exception; no ledger writes.",
-    "Four unpatched unused Chroma server advisories retain unchanged exact-version exceptions expiring 2026-11-26.",
-    "Hosted CI and linux/amd64 image builds verified; registry publish, protected environment activation, staging/rollback and production remain unexecuted.",
-    "Recorded verification is bound to exact existing commit/run receipts. A documentation commit cannot contain its own SHA or a future run result."
+    "Same four labels, expanded source_id evidence and revised prompts/routing; not isolated model attribution.",
+    "Fewer tool calls/latency also reflect earlier failures; completion regressed on fixed benchmark.",
+    "Historical token coverage two completed cases; current includes caught failure usage, possibly partial. Total tokens are not directly comparable.",
+    "No accepted incorrect allocations does not establish absence of erroneous proposals inside rejected outputs.",
+    "Seven constructed holdouts and one run each do not establish general population accuracy.",
+    "Nine schema failures across eleven live cases; only one supported pair recovered. No stronger model installed or compared; no download.",
+    "Four unchanged reviewed Chroma advisories expire 2026-11-26. No deployment or production verification."
   ],
   "current_iteration": "iteration-010",
   "local_images_snapshot_iteration": "iteration-008; not rebuilt locally for focused Iteration 009",
   "verified_remote_main": {
-    "commit": "f1e21382a9ec686eb585d7ca93021a2f66f64244",
+    "commit": "2a1029838a38cb9dafa2f38dbfdbf635357ce619",
     "conclusion": "success",
     "jobs": [
       {
         "conclusion": "success",
-        "name": "browser",
-        "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40369553647/job/121736291844"
-      },
-      {
-        "conclusion": "success",
-        "name": "secrets",
-        "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40369553647/job/121736292050"
+        "name": "containers",
+        "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40370217830/job/121738621592"
       },
       {
         "conclusion": "success",
         "name": "frontend",
-        "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40369553647/job/121736292123"
-      },
-      {
-        "conclusion": "success",
-        "name": "containers",
-        "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40369553647/job/121736292211"
+        "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40370217830/job/121738622042"
       },
       {
         "conclusion": "success",
         "name": "backend",
-        "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40369553647/job/121736292457"
+        "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40370217830/job/121738622057"
+      },
+      {
+        "conclusion": "success",
+        "name": "browser",
+        "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40370217830/job/121738622064"
+      },
+      {
+        "conclusion": "success",
+        "name": "secrets",
+        "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40370217830/job/121738622129"
       }
     ],
-    "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40369553647"
+    "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40370217830"
   },
   "prior_remote_history": {
     "original_iterations_commit": "ccd52b98f1a6de0559e3281afafe03370c000513",
@@ -397,5 +447,128 @@
     "provisioning": false
   },
   "documentation_commit": "4c78151ef9cb043026403d0371d1d7e163dcd062",
-  "metadata_recording_boundary": "This receipt-only commit records already observed stage SHAs/runs. Its own SHA and hosted outcome are verified after push and reported in the final handover; a commit cannot contain its own SHA or future run result."
+  "metadata_recording_boundary": "Exact SHA and CI receipts describe already observed stages. A subsequent receipt records this stage; final receipt own SHA/run is reported externally.",
+  "iteration_010_evaluation": {
+    "synthetic": true,
+    "configuration_commit": "2a1029838a38cb9dafa2f38dbfdbf635357ce619",
+    "fixed_original": {
+      "correct_decisions": 0,
+      "completed_cases": 2,
+      "failures": 2,
+      "tool_calls": 43,
+      "successful_tool_calls": 30,
+      "tool_success_rate": 0.6976744186046512,
+      "latency_ms": 489037,
+      "known_total_tokens_completed_only": 73272,
+      "cases_with_known_usage": 2,
+      "supported_allocations_recovered": 0
+    },
+    "fixed_current": {
+      "supported_allocations_recovered": 0,
+      "tool_calls": 8,
+      "tool_success_rate": 1.0,
+      "validation_rejections_observed": 4,
+      "final_validation_failures": 0,
+      "inference_failures": 4,
+      "latency_ms": 195097,
+      "known_total_tokens": 99118,
+      "cases_with_known_usage": 4,
+      "cases": 4,
+      "exact_decisions_correct": 0,
+      "accuracy": 0.0,
+      "failures": 4,
+      "abstentions": 0,
+      "proposed_allocations": 0,
+      "wrong_target_or_amount": 0,
+      "allocation_precision": null,
+      "allocation_recall": 0.0,
+      "completed_cases": 0,
+      "schema_error_cases": 4,
+      "timeouts": 0,
+      "completed_tasks": 0
+    },
+    "holdout_current": {
+      "supported_allocations_recovered": 1,
+      "tool_calls": 16,
+      "tool_success_rate": 1.0,
+      "validation_rejections_observed": 7,
+      "final_validation_failures": 0,
+      "inference_failures": 5,
+      "latency_ms": 278824,
+      "known_total_tokens": 173170,
+      "cases_with_known_usage": 7,
+      "cases": 7,
+      "exact_decisions_correct": 1,
+      "accuracy": 0.14285714285714285,
+      "failures": 5,
+      "abstentions": 1,
+      "proposed_allocations": 1,
+      "wrong_target_or_amount": 0,
+      "allocation_precision": 1.0,
+      "allocation_recall": 0.3333333333333333,
+      "completed_cases": 2,
+      "schema_error_cases": 5,
+      "timeouts": 0,
+      "completed_tasks": 4
+    },
+    "reasoning_quality_improvement_demonstrated": false,
+    "tool_interface_success_rate_improved": true,
+    "caveats": [
+      "Same four labels, expanded source_id evidence and revised prompts/routing; not isolated model attribution.",
+      "Fewer tool calls/latency also reflect earlier failures; completion regressed on fixed benchmark.",
+      "Historical token coverage two completed cases; current includes caught failure usage, possibly partial. Total tokens are not directly comparable.",
+      "No accepted incorrect allocations does not establish absence of erroneous proposals inside rejected outputs.",
+      "Seven constructed holdouts and one run each do not establish general population accuracy."
+    ]
+  },
+  "running_local_services_snapshot_iteration": "Historical Iteration 008 values, not a current uptime claim",
+  "iteration_010_verification": {
+    "backend_and_release": {
+      "database": "real PostgreSQL, revenueops_test",
+      "passed": 100,
+      "warnings": 138,
+      "duration_seconds": 8.03
+    },
+    "hosted_stage_2": {
+      "backend_passed": 80,
+      "release_passed": 20,
+      "frontend_passed": 5,
+      "browser_passed": 5,
+      "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40370217830"
+    },
+    "frontend_local": {
+      "lint": "passed",
+      "component_tests": 5,
+      "build": "passed",
+      "audit": "0 vulnerabilities"
+    },
+    "browser_local": {
+      "first": {
+        "passed": 4,
+        "failed": 1,
+        "seconds": 37,
+        "failure": "5s wait for reconciliation View details button timed out during concurrent inference"
+      },
+      "rerun": {
+        "passed": 5,
+        "failed": 0,
+        "seconds": 11.8,
+        "condition": "Inference finished; same synthetic database, warmed services and previously generated cases. No test/assertion/frontend changes. Cause of first failure not uniquely established."
+      }
+    },
+    "ruff_lint": "passed",
+    "ruff_format": "passed",
+    "actionlint": "passed",
+    "pip_check": "passed",
+    "migration_upgrade_and_check": "passed",
+    "baseline_regression": "13/13",
+    "dependency_audit": {
+      "unreviewed": 0,
+      "reviewed_chroma": 4,
+      "expiry": "2026-11-26"
+    },
+    "gitleaks": "passed",
+    "initial_setup_failures": "Root Alembic cwd corrected, restricted audit retried with network, secret scanner path corrected; detailed in iteration record.",
+    "test_services": "isolated API/frontend stopped; own disposable browser database removed and started db service stopped"
+  }
 }

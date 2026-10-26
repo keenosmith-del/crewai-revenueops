@@ -1,0 +1,23 @@
+{
+  "comparison_base": "72b4f6b60ec2cfe299ae2ded8325b8df45f31901",
+  "protected_paths": [
+    "backend/app/accounting",
+    "backend/app/reconciliation",
+    "backend/app/security",
+    "backend/app/services/workflows.py",
+    "backend/app/services/ledger.py",
+    "backend/app/workers",
+    "frontend/src",
+    "infra",
+    ".github/workflows/deploy-staging.yml",
+    "docs/security/dependency-exceptions.json",
+    "data/evaluations/ambiguous-cases.json",
+    "docs/testing/iteration-009"
+  ],
+  "changed_protected_files": [],
+  "frozen_benchmark_sha256": "65ae4ce7666d346ba3dac74c652f6968615be3b51b444c22f391595d1519d3a9",
+  "holdout_sha256": "4b1b934c5352fb7ef741d5b2d1dedd17f789c91fc35f7b5752a101d4580c6766",
+  "evidence_validation": "Exact citation/identity/recommendation checks retained; guardrail callback added only.",
+  "posted_allocations": "Evaluation fixture asserts zero; financial write code unchanged.",
+  "boundaries": "Local synthetic inference only; no deploy, model download, paid provider, provisioning or communications."
+}

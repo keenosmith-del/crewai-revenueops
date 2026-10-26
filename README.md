@@ -31,23 +31,25 @@ the baseline application. All included business records and identities are synth
 
 See [actual results](docs/testing/results.md), [handover](docs/portfolio/handover.md) and
 [release manifest](docs/iterations/release-manifest.json) for exact evidence and Git hashes.
-Iteration 009 is pushed to the existing origin/main. [Hosted verification](https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40354134960)
-passed all five jobs: backend, browser, frontend, containers and secrets. The PostgreSQL
-service health-command quoting is corrected in both jobs. The current local suite passes
-**87 tests**, plus **5 frontend tests** and **5 browser workflows** verified on GitHub.
+Iteration 010's interface stage is pushed to origin/main and [passed all five hosted jobs](https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40370217830):
+backend, browser, frontend, containers and secrets. The current suite passes **100 backend
+and release tests** on PostgreSQL, **5 frontend tests** and **5 hosted browser workflows**.
 
-The 13-case deterministic regression set remains 13/13. The earlier three-case live probe
-was an easy safe-abstention check. A new [four-case ambiguous-payment benchmark](docs/testing/iteration-009/methodology.md)
-uses the same evidence and independent ground truth for both approaches: **baseline 1/4,
-actual local CrewAI 0/4**. The model missed two supported matches, timed out once and failed
-once; 43 read-tool calls, zero ledger postings. No model improvement is demonstrated.
-Mocked contract inference is labelled separately from this actual local run.
+The deterministic regression set remains 13/13. [Iteration 010 live results](docs/testing/iteration-010/results.md)
+preserve the original four cases and add seven sealed holdouts: **fixed CrewAI 0/4 vs
+baseline 1/4; holdout CrewAI 1/7 vs baseline 4/7**. Tool reads improved from 30/43 successful
+to 8/8 on the fixed set, but all four fixed cases failed typed output. Across eleven
+cases, nine failed validation and one of six supported allocation pairs was recovered.
+No investigation-quality improvement is demonstrated; faster failure is not a throughput
+gain. All actual attempts, tokens, latency and limitations are retained. No ledger writes.
+Mocked contract inference remains explicitly separate from live measurements.
 
-Staging CD remains prepared only. **No deployment, environment activation, registry publish
-or paid-model invocation occurred.** Commits, exact hosted run receipts and their scope
-are recorded in [Iteration 009](docs/iterations/iteration-009.md) and the release manifest.
-The documentation stage also [passed independently](https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40355395067).
-The badge reports the actual main-branch workflow; successful CI does not certify production.
+Only llama3.2:3b is installed on the 16 GiB Mac. No stronger-model comparison, model download
+or paid inference was performed. This configuration is not reliable for these investigations.
+Staging CD remains prepared only: **no deployment, environment activation, registry publish
+or provisioning occurred**. Exact stage hashes and hosted receipts are recorded in
+[Iteration 010](docs/iterations/iteration-010.md) and the release manifest. The badge reflects
+main's workflow; successful CI does not certify production or model accuracy.
 
 Python security review retains four unpatched ChromaDB server advisories in a transitive
 CrewAI dependency. No Chroma server, memory or knowledge feature is enabled. Exact scoped,
@@ -125,4 +127,4 @@ credit notes, general-ledger posting, email transport, SSO/MFA/password recovery
 availability or large-scale performance certification. List pagination currently filters
 in memory for this demonstration dataset. AI collection drafts require one eligible
 invoice in scope; multi-invoice follow-ups use explicit reviewed template drafts. Live
-model reliability remains poor on the harder four-case evaluation and needs broader evaluation. Production deployment remains unverified.
+model reliability remains poor on fixed and holdout cases, with typed-output failures. Production deployment remains unverified.

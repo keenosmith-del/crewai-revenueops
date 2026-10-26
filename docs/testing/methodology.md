@@ -55,3 +55,13 @@ MODEL_MODE=ollama OLLAMA_URL=http://localhost:11434 PYTHONPATH=backend .venv/bin
 ```
 Ordinary CI never supplies --live. Published live artifacts are recorded local evidence,
 not a claim CI ran inference. Interrupted multi-case comparisons should be rerun explicitly.
+
+
+## Iteration 010 frozen comparison and sealed holdouts
+The original four Iteration 009 cases and labels remain immutable. Seven new synthetic
+holdouts were committed before interface changes/live inference. See
+[predeclared method](iteration-010/methodology.md), [all live results](iteration-010/results.md)
+and comparison.json. One attempt each, no favourable rerun selection; errors count as
+incorrect, not abstention. Accepted pairs and partial recall differ from exact decisions.
+Current 0/4 fixed and 1/7 holdout outcomes do not demonstrate investigation improvement.
+Historical failed-run token usage is unknown; compare coverage before comparing totals.

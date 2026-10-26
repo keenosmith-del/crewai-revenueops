@@ -1,0 +1,49 @@
+{
+  "backend_and_release": {
+    "database": "real PostgreSQL, revenueops_test",
+    "passed": 100,
+    "warnings": 138,
+    "duration_seconds": 8.03
+  },
+  "hosted_stage_2": {
+    "backend_passed": 80,
+    "release_passed": 20,
+    "frontend_passed": 5,
+    "browser_passed": 5,
+    "url": "https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40370217830"
+  },
+  "frontend_local": {
+    "lint": "passed",
+    "component_tests": 5,
+    "build": "passed",
+    "audit": "0 vulnerabilities"
+  },
+  "browser_local": {
+    "first": {
+      "passed": 4,
+      "failed": 1,
+      "seconds": 37,
+      "failure": "5s wait for reconciliation View details button timed out during concurrent inference"
+    },
+    "rerun": {
+      "passed": 5,
+      "failed": 0,
+      "seconds": 11.8,
+      "condition": "Inference finished; same synthetic database, warmed services and previously generated cases. No test/assertion/frontend changes. Cause of first failure not uniquely established."
+    }
+  },
+  "ruff_lint": "passed",
+  "ruff_format": "passed",
+  "actionlint": "passed",
+  "pip_check": "passed",
+  "migration_upgrade_and_check": "passed",
+  "baseline_regression": "13/13",
+  "dependency_audit": {
+    "unreviewed": 0,
+    "reviewed_chroma": 4,
+    "expiry": "2026-11-26"
+  },
+  "gitleaks": "passed",
+  "initial_setup_failures": "Root Alembic cwd corrected, restricted audit retried with network, secret scanner path corrected; detailed in iteration record.",
+  "test_services": "isolated API/frontend stopped; own disposable browser database removed and started db service stopped"
+}

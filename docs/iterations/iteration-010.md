@@ -53,3 +53,57 @@ Stage 2 definitive local checks: 100 backend/release tests passed against real d
 PostgreSQL (138 compatibility warnings, 8.03s); Ruff lint/format, actionlint and diff check
 passed. Fixed baseline 1/4, holdout baseline 4/7; zero labelled supported allocations
 recovered by either baseline. No live inference results yet. Hosted outcome pending.
+
+Stage 2 commit 2a1029838a38cb9dafa2f38dbfdbf635357ce619 verified on origin/main.
+Hosted run https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40370217830
+succeeded in all five jobs; receipt ci-stage-2.json. Local live evaluation begins only
+with this frozen application configuration. No prompts or labels change between cases.
+
+## Stage 3 — live evaluation and full verification (in progress)
+Run fixed-live-01 then holdout-live-01 sequentially on installed llama3.2:3b; all attempts
+retained. The added source_id changes the evidence schema relative to 009; dataset and
+labels stay frozen, baseline/assisted evidence hashes match within 010. Any before/after
+change is the combined interface/evidence/routing effect, not isolated model improvement.
+
+Verification setup corrections: first Alembic invocation from repository root failed to
+find migrations; repeated from required backend directory succeeded, including alembic
+check. First restricted dependency audit lacked network access; authorised network rerun
+found the same four reviewed Chroma advisories and no unreviewed findings. Initial secret
+scan invocation targeted the tool directory; corrected invocation uses its binary.
+
+Frontend lint, five component tests and build passed; no frontend source/design changes.
+First local Playwright run: four passed, one reconciliation table wait timed out at 5s
+while local inference competed for resources. Hosted browser job passed. Retain failure;
+rerun after inference completes and report both outcomes, without extending assertions.
+
+### Stage 3 observed live result and verification
+Fixed: 0/4 exact, no supported pairs, four ValidationError failures, no completed task,
+8/8 successful tool calls, 195097ms, 99118 reported tokens (possibly partial on failures).
+Historical fixed: 0/4 exact, two completed abstentions, two failures, 30/43 successful
+calls, 489037ms; only two cases have known usage (73272 tokens). Completion regressed.
+Holdout: 1/7 exact vs baseline 4/7; one of three supported pairs, one valid abstention,
+five ValidationError failures, 16/16 successful calls, 278824ms, 173170 reported tokens.
+One split proposal recovered 80.00 but omitted the required 40.00 companion allocation.
+The sole exact holdout success is safe abstention on the foreign-currency invoice case.
+No timeouts, accepted wrong pairs, or ledger writes. No quality or token-efficiency gain.
+Nine failures across eleven cases remain in denominators. All attempts are retained.
+
+Full checks: 100 PostgreSQL/backend/release passed (138 warnings); deterministic 13/13;
+frontend lint, 5 component tests, build and zero-vulnerability npm audit; migrations/check;
+pip check; Ruff/actionlint; contracts; Gitleaks; same four reviewed Python advisories,
+zero unreviewed. Stage 2 hosted logs independently show 80 backend + 20 release + 5
+frontend + 5 browser passed; both containers built. Protected financial/security/worker,
+frontend, deployment and original benchmark/report files unchanged (safety-review.json).
+
+Local browser initial 4/5 retained. Rerun after inference: 5/5 in 11.8s on the same
+synthetic DB, with warmed services and cases already generated; first failure cause is
+not uniquely established. No assertions/timeouts/frontend implementation changed. Isolated
+API/frontend stopped; only this iteration's disposable browser DB removed and the db
+service started for verification stopped. Existing data volumes and databases preserved.
+
+README, agent engineering, methodology, results, portfolio/handover and release manifest
+updated with failures and limits. Stronger-model comparison unperformed: none installed;
+no download, paid model, deployment, paid provisioning, bank action or communication.
+Full-schema guidance did not resolve typed output and adds prompt text. A future
+investigation needs field-level error metadata and controlled stronger-model evaluation;
+no guardrail should be loosened. Stage 3 hosted outcome will be recorded after observation.

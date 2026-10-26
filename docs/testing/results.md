@@ -1,5 +1,16 @@
 # Actual verification results — 2026-10-26
 
+Current Iteration 010: **100 PostgreSQL/backend/release tests passed**, 138 warnings;
+frontend lint, 5 component tests and build passed. All five hosted jobs passed for
+[interface stage 2a102983](https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40370217830).
+
+[Iteration 010 complete live results](iteration-010/results.md): original fixed cases
+**0/4** exact (baseline 1/4), separate sealed holdouts **1/7** (baseline 4/7). Nine typed
+failures in eleven cases, one of six supported allocation pairs recovered, 24/24 successful
+read calls, no ledger writes. Tool reliability improves but investigation quality does not.
+Fixed-case completion regresses 2/4 to 0/4; no token-efficiency claim. The tables below are
+historical Iteration 009 evidence, retained unchanged in scope.
+
 | Check | Actual outcome |
 |---|---|
 | PostgreSQL/full suite, Iteration 009 | **87 passed**, 149 compatibility warnings, 21.44s locally; same 67 backend + 20 release checks passed on hosted CI |

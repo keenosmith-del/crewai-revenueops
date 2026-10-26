@@ -45,3 +45,31 @@ The documentation stage independently passed all five hosted jobs at
 https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40355395067.
 The final receipt-only commit records this observed outcome; its own post-push verification
 is reported in the final handover rather than predicted inside its own source tree.
+
+
+## Iteration 010 — measured reliability limits
+
+The evidence contract now supports a single scoped snapshot read, clear citation/raw IDs,
+allowlisted lookup hints and source provenance. Ordinary ambiguity retains independent
+investigator/quality tasks; active disputes retain the analyst. All exact citation,
+financial, authorisation and human approval controls remain. Frontend design is unchanged.
+
+The original four-case benchmark stays frozen: local llama3.2:3b remains **0/4** exact,
+and completion regresses from 2/4 to 0/4. Tool success improves 30/43 to 8/8, with calls
+43 to 8 and summed latency 489037ms to 195097ms, partly due to earlier validation failure.
+Seven sealed holdouts achieve **1/7** exact vs baseline **4/7**, recovering one of three
+supported allocation pairs, with five failed cases. Nine of eleven live cases fail typed
+output; no accepted wrong pair or ledger write. Usage is retained, but historical failed
+usage is unknown, so no token-efficiency improvement is claimed.
+
+The same installed 3B model was used; no stronger local candidate was installed, no model
+was downloaded, and no paid provider or infrastructure was used. Advertising tool calling
+does not establish semantic or schema reliability. [Full results](../testing/iteration-010/results.md),
+[methodology](../testing/iteration-010/methodology.md) and [stage record](../iterations/iteration-010.md)
+retain all failures and qualify the tool improvement. No claim of improved investigation
+accuracy, robust injection resistance, automatic finance readiness or production release.
+
+PostgreSQL/backend/release: 100 passed; frontend: 5 passed; stage-2 hosted browser: 5 passed.
+[Interface-stage CI](https://github.com/keenosmith-del/crewai-revenueops/actions/runs/40370217830)
+succeeded in all five required jobs, including both container builds. Four reviewed Chroma
+advisories remain unchanged. Deployment and provisioning remain unexecuted.

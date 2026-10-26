@@ -1,0 +1,70 @@
+{
+  "observed_date": "2026-10-26",
+  "python": "3.12.15",
+  "architecture": "arm64",
+  "memory_bytes": 17179869184,
+  "crewai": "1.15.30",
+  "provider": {
+    "temperature": 0,
+    "max_tokens": 2500,
+    "timeout": 90
+  },
+  "downloaded_models": false,
+  "paid_providers": false,
+  "configuration_stage": "2a1029838a38cb9dafa2f38dbfdbf635357ce619",
+  "tags": {
+    "models": [
+      {
+        "name": "llama3.2:3b",
+        "model": "llama3.2:3b",
+        "modified_at": "2026-10-25T03:42:04.673042552+02:00",
+        "size": 2019393189,
+        "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+        "details": {
+          "parent_model": "",
+          "format": "gguf",
+          "family": "llama",
+          "families": [
+            "llama"
+          ],
+          "parameter_size": "3.2B",
+          "quantization_level": "Q4_K_M",
+          "context_length": 131072,
+          "embedding_length": 3072,
+          "runner": "ggml"
+        },
+        "capabilities": [
+          "completion",
+          "tools"
+        ]
+      }
+    ]
+  },
+  "version": {
+    "version": "0.40.11"
+  },
+  "ps": {
+    "models": [
+      {
+        "name": "llama3.2:3b",
+        "model": "llama3.2:3b",
+        "size": 2340883004,
+        "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+        "details": {
+          "parent_model": "",
+          "format": "gguf",
+          "family": "llama",
+          "families": [
+            "llama"
+          ],
+          "parameter_size": "3.2B",
+          "quantization_level": "Q4_K_M"
+        },
+        "expires_at": "2026-10-26T19:42:33.419871+02:00",
+        "size_vram": 2340883004,
+        "context_length": 4096,
+        "runner": "llamacpp"
+      }
+    ]
+  }
+}
