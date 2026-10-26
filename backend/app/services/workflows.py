@@ -105,7 +105,13 @@ def review(db, user, case_id, decision, note, key, allocations=None):
             raise HTTPException(409, "Idempotency key reused for a different request")
         return previous.result
     case = get(db, Investigation, case_id, user.org_id, lock=True)
-    if case.status not in ("human_review", "partially_allocated", "rejected", "needs_information"):
+    if case.status not in (
+        "human_review",
+        "partially_allocated",
+        "failed",
+        "rejected",
+        "needs_information",
+    ):
         raise HTTPException(409, "Case cannot be reviewed in its current state")
     old = case.status
     if decision == "approve":
@@ -148,7 +154,13 @@ def review(db, user, case_id, decision, note, key, allocations=None):
 
 def enqueue(db, user, case_id, mode, model, purpose="investigation"):
     case = get(db, Investigation, case_id, user.org_id, lock=True)
-    if case.status not in ("human_review", "needs_information", "rejected", "failed"):
+    if case.status not in (
+        "human_review",
+        "partially_allocated",
+        "needs_information",
+        "rejected",
+        "failed",
+    ):
         raise HTTPException(409, "Case already running or terminal")
     execution = Execution(
         org_id=user.org_id,

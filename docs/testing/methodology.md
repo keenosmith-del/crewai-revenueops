@@ -17,7 +17,12 @@ restricted tool behaviour and state resumption. They do not establish live reaso
 Live evidence is separate: docs/testing/live-model.json records the first larger-case
 Ollama timeout (one tool call, no completed task), and live-small-model.json records the
 successful two-agent local-native-provider execution, tool count and reported token usage.
-Neither single-case probe is a statistically meaningful baseline improvement measurement.
+The later live-main-model.json records a larger native-adapter case rejected with ValidationError after 23 tool calls; no balances changed.
+The three-case live-comparison.json compares actual deterministic outcomes with actual
+local crews for unmatched, cross-currency and injected-reference cases. Both scored 3/3
+on safe exception handling, with 3 tool calls per case. This small selected sample does
+not establish a statistically meaningful baseline improvement. Framework token counts may
+include approximations; usage is reported as CrewAI supplied it.
 No hosted inference or cost estimate is fabricated. The benchmark reports this limitation.
 
 Browser checks exercise the actual API and PostgreSQL: login, reconcile, approve and
@@ -39,5 +44,14 @@ npm --prefix frontend test
 npm --prefix frontend run build
 npm --prefix frontend run test:e2e
 ```
-Start the services first for browser checks. Playwright default URL is localhost:5174;
-E2E_URL overrides it. Seeded database required. No test starts a paid model or sends mail.
+Browser writes require a separate revenueops_browser_test database and APP_ENV=test.
+The sign-in helper verifies synthetic identity and test environment before every workflow.
+Playwright defaults to port 5175; E2E_URL overrides it for the isolated CI service.
+Use the isolated setup in docs/deployment/local.md. No test starts a paid model or sends mail.
+
+Optional live comparison (explicit local-only invocation):
+```sh
+MODEL_MODE=ollama OLLAMA_URL=http://localhost:11434 PYTHONPATH=backend .venv/bin/python -m app.evaluations.runner --live
+```
+Ordinary CI never supplies --live. Published live artifacts are recorded local evidence,
+not a claim CI ran inference. Interrupted multi-case comparisons should be rerun explicitly.

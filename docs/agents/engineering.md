@@ -47,7 +47,7 @@ flowchart LR
 
 ## PostgreSQL checkpoints and recovery
 Execution rows own job state, attempts, model/mode, stage, lease token, deadline, JSON
-Flow state, results, usage and errors. No CrewAI SQLite persistence is authoritative.
+Flow state (including the actual Crew UUID), results, usage and errors. No CrewAI SQLite persistence is authoritative.
 Worker claims with FOR UPDATE SKIP LOCKED, commits, then loads evidence and closes
 its transaction before inference. Parent process renews a 90s lease every 10s. A child
 process bounds total runtime at 480s. Persisted callbacks/checkpoints use short sessions.

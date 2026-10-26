@@ -1,6 +1,116 @@
-import {useState} from 'react'
-import {PageHeader,ResourceTable,Notice,Modal,Status} from '../../components/ui/Shared'
-import {post} from '../../services/api'
-import {useAuth} from '../../context/Auth'
-import './Collections.css'
-export default function Collections(){const [version,setVersion]=useState(0),[selected,setSelected]=useState(null),[error,setError]=useState('');const {user}=useAuth();async function make(row){try{setSelected(await post('/collections/drafts',{invoice_id:row.id}));setVersion(v=>v+1)}catch(e){setError(e.message)}}async function review(decision){try{setSelected(await post(`/collections/drafts/${selected.id}/review`,{decision}));setVersion(v=>v+1)}catch(e){setError(e.message)}}return <><PageHeader title="Collections" description="Thoughtful follow-ups on legitimate overdue balances."/><Notice>Drafts are never sent. Disputed and settled invoices are excluded from follow-up approval.</Notice>{error&&<Notice error>{error}</Notice>}<h2>Overdue receivables</h2><ResourceTable resource="invoices" extra="&status=overdue" columns={[["reference","Invoice"],["due_date","Due date"],["outstanding","Outstanding"],["currency","Currency"]]} actions={row=><button className="text-button" disabled={user.role==='viewer'} onClick={()=>make(row)}>Prepare draft</button>}/><h2>Draft history</h2><ResourceTable key={version} resource="drafts" columns={[["invoice_id","Invoice"],["source","Source"],["status","Status"],["created_at","Created"]]} onSelect={setSelected}/>{selected&&<Modal title="Customer follow-up draft" onClose={()=>setSelected(null)}><p><Status value={selected.status}/></p><p className="draft-body">{selected.body}</p><p className="muted">Approval records an internal decision only. No communication is sent.</p><div className="actions"><button disabled={!['admin','reviewer'].includes(user.role)||selected.status!=='draft'} onClick={()=>review('approve')}>Approve draft</button><button className="secondary" disabled={!['admin','reviewer'].includes(user.role)||selected.status!=='draft'} onClick={()=>review('reject')}>Reject draft</button></div></Modal>}</>}
+import { useState } from "react";
+import {
+  PageHeader,
+  ResourceTable,
+  Notice,
+  Modal,
+  Status,
+} from "../../components/ui/Shared";
+import { post } from "../../services/api";
+import { useAuth } from "../../context/Auth";
+import "./Collections.css";
+export default function Collections() {
+  const [version, setVersion] = useState(0),
+    [selected, setSelected] = useState(null),
+    [error, setError] = useState("");
+  const { user } = useAuth();
+  async function make(row) {
+    try {
+      setSelected(await post("/collections/drafts", { invoice_id: row.id }));
+      setVersion((v) => v + 1);
+    } catch (e) {
+      setError(e.message);
+    }
+  }
+  async function review(decision) {
+    try {
+      setSelected(
+        await post(`/collections/drafts/${selected.id}/review`, { decision }),
+      );
+      setVersion((v) => v + 1);
+    } catch (e) {
+      setError(e.message);
+    }
+  }
+  return (
+    <>
+      <PageHeader
+        title="Collections"
+        description="Thoughtful follow-ups on legitimate overdue balances."
+      />
+      <Notice>
+        Drafts are never sent. Disputed and settled invoices are excluded from
+        follow-up approval.
+      </Notice>
+      {error && <Notice error>{error}</Notice>}
+      <h2>Overdue receivables</h2>
+      <ResourceTable
+        resource="invoices"
+        extra="&status=overdue"
+        columns={[
+          ["reference", "Invoice"],
+          ["due_date", "Due date"],
+          ["outstanding", "Outstanding"],
+          ["currency", "Currency"],
+        ]}
+        actions={(row) => (
+          <button
+            className="text-button"
+            disabled={user.role === "viewer"}
+            onClick={() => make(row)}
+          >
+            Prepare draft
+          </button>
+        )}
+      />
+      <h2>Draft history</h2>
+      <ResourceTable
+        key={version}
+        resource="drafts"
+        columns={[
+          ["invoice_id", "Invoice"],
+          ["source", "Source"],
+          ["status", "Status"],
+          ["created_at", "Created"],
+        ]}
+        onSelect={setSelected}
+      />
+      {selected && (
+        <Modal
+          title="Customer follow-up draft"
+          onClose={() => setSelected(null)}
+        >
+          <p>
+            <Status value={selected.status} />
+          </p>
+          <p className="draft-body">{selected.body}</p>
+          <p className="muted">
+            Approval records an internal decision only. No communication is
+            sent.
+          </p>
+          <div className="actions">
+            <button
+              disabled={
+                !["admin", "reviewer"].includes(user.role) ||
+                selected.status !== "draft"
+              }
+              onClick={() => review("approve")}
+            >
+              Approve draft
+            </button>
+            <button
+              className="secondary"
+              disabled={
+                !["admin", "reviewer"].includes(user.role) ||
+                selected.status !== "draft"
+              }
+              onClick={() => review("reject")}
+            >
+              Reject draft
+            </button>
+          </div>
+        </Modal>
+      )}
+    </>
+  );
+}

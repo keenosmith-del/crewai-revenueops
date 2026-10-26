@@ -59,6 +59,7 @@ def claim(db):
         case.status = "failed"
         db.commit()
         return None
+    job.checkpoint = {**job.checkpoint, "attempt_started_at": now().isoformat()}
     job.status = "running"
     job.attempts += 1
     job.lease_token = str(uuid4())
@@ -105,7 +106,13 @@ def execute(execution_id, lease):
             )
             db.commit()
 
+    last_task_finished = time.monotonic()
+
     def task_callback(output):
+        nonlocal last_task_finished
+        completed_at = time.monotonic()
+        elapsed_ms = int((completed_at - last_task_finished) * 1000)
+        last_task_finished = completed_at
         with SessionLocal() as db:
             owned(db, execution_id, lease)
             db.add(
@@ -117,6 +124,7 @@ def execute(execution_id, lease):
                     detail={
                         "agent": output.agent,
                         "task": output.name,
+                        "elapsed_since_previous_task_ms": elapsed_ms,
                         "structured_output": output.pydantic.model_dump()
                         if output.pydantic
                         else {},
@@ -128,7 +136,8 @@ def execute(execution_id, lease):
 
     llm = (
         None
-        if context["classification"] == "exact" and context["purpose"] != "collections"
+        if saved.get("result")
+        or (context["classification"] == "exact" and context["purpose"] != "collections")
         else get_llm()
     )
     flow = ReconciliationFlow(
@@ -141,6 +150,11 @@ def execute(execution_id, lease):
     inputs = {**saved, "id": execution_id}
     flow.kickoff(inputs=inputs)
     result = flow.state.result
+    if result:
+        from app.agents.tasks.validation import validate_findings
+
+        validate_findings(result, context)
+
     with SessionLocal() as db:
         db.scalar(select(Organisation).where(Organisation.id == org).with_for_update())
         e = owned(db, execution_id, lease)
@@ -183,6 +197,8 @@ def execute(execution_id, lease):
             "completed",
             "human_review",
         )
+        if not result:
+            e.mode, e.model = "deterministic_only", ""
         e.usage = flow.state.usage
         e.duration_ms = int((time.monotonic() - started) * 1000)
         e.lease_until = None
@@ -205,6 +221,13 @@ def fail(execution_id, lease, category):
         except LostLease:
             return
         e.status, e.stage, e.error = "failed", "failed", category
+        if e.checkpoint.get("attempt_started_at"):
+            from datetime import datetime
+
+            e.duration_ms = int(
+                (now() - datetime.fromisoformat(e.checkpoint["attempt_started_at"])).total_seconds()
+                * 1000
+            )
         case = get(db, Investigation, e.investigation_id, e.org_id)
         case.status = "failed"
         db.add(

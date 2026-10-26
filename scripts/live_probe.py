@@ -47,5 +47,7 @@ with SessionLocal() as db:
         "result": e.result,
         "no_ledger_mutations": True,
     }
-    Path("docs/testing/live-model.json").write_text(json.dumps(report, indent=2) + "\n")
+    Path("docs/testing/live-main-model.json").write_text(
+        json.dumps(report, indent=2) + "\n"
+    )
     print(json.dumps(report, indent=2))

@@ -1,4 +1,39 @@
-import {useData} from '../../hooks/useData'
-import {PageHeader,Notice} from '../../components/ui/Shared'
-import './Settings.css'
-export default function Settings(){const {data,error,loading}=useData('/settings');return <><PageHeader title="Settings" description="Operating policy, provider configuration and safety boundaries."/>{error?<Notice error>{error}</Notice>:loading?<p>Loading settings…</p>:<section className="panel"><h2>Environment configuration</h2><dl className="settings-list">{Object.entries(data).map(([key,value])=><div key={key}><dt>{key.replaceAll('_',' ')}</dt><dd>{Array.isArray(value)?value.join(', '):String(value ?? 'Not configured')}</dd></div>)}</dl><Notice>Configuration changes require an operator-managed environment update and service restart. Secrets are never exposed here.</Notice></section>}</>}
+import { useData } from "../../hooks/useData";
+import { PageHeader, Notice } from "../../components/ui/Shared";
+import "./Settings.css";
+export default function Settings() {
+  const { data, error, loading } = useData("/settings");
+  return (
+    <>
+      <PageHeader
+        title="Settings"
+        description="Operating policy, provider configuration and safety boundaries."
+      />
+      {error ? (
+        <Notice error>{error}</Notice>
+      ) : loading ? (
+        <p>Loading settings…</p>
+      ) : (
+        <section className="panel">
+          <h2>Environment configuration</h2>
+          <dl className="settings-list">
+            {Object.entries(data).map(([key, value]) => (
+              <div key={key}>
+                <dt>{key.replaceAll("_", " ")}</dt>
+                <dd>
+                  {Array.isArray(value)
+                    ? value.join(", ")
+                    : String(value ?? "Not configured")}
+                </dd>
+              </div>
+            ))}
+          </dl>
+          <Notice>
+            Configuration changes require an operator-managed environment update
+            and service restart. Secrets are never exposed here.
+          </Notice>
+        </section>
+      )}
+    </>
+  );
+}

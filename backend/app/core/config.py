@@ -4,13 +4,15 @@ from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 os.environ.setdefault("CREWAI_STORAGE_DIR", str(Path(__file__).resolve().parents[3] / ".runtime"))
-os.environ.setdefault("OTEL_SDK_DISABLED", "true")
-os.environ.setdefault("CREWAI_TELEMETRY_ENABLED", "false")
-os.environ.setdefault("CREWAI_TRACING_ENABLED", "false")
+os.environ["OTEL_SDK_DISABLED"] = "true"
+os.environ["CREWAI_TELEMETRY_ENABLED"] = "false"
+os.environ["CREWAI_TRACING_ENABLED"] = "false"
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file="../.env", extra="ignore")
+    model_config = SettingsConfigDict(
+        env_file=Path(__file__).resolve().parents[3] / ".env", extra="ignore"
+    )
     database_url: str = "postgresql+psycopg://revenueops:local-only@localhost:55433/revenueops"
     app_env: str = "development"
     jwt_secret: str = "local-development-only-replace-this-secret"

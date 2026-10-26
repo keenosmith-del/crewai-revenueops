@@ -1,11 +1,184 @@
-import {useState} from 'react'
-import {Link} from 'react-router-dom'
-import {useData} from '../../hooks/useData'
-import {formatMoney} from '../../services/api'
-import {PageHeader,Notice} from '../../components/ui/Shared'
-import './Dashboard.css'
-export default function Dashboard(){
- const [currency,setCurrency]=useState('ZAR'),[start,setStart]=useState(''),[end,setEnd]=useState('')
- const {data:d,error,loading}=useData(`/dashboard?currency=${currency}${start?'&start='+start:''}${end?'&end='+end:''}`)
- return <><PageHeader title="A clearer view of your receivables." description="Reconcile with evidence. Resolve with confidence."><label className="filter-label">Currency<select value={currency} onChange={e=>setCurrency(e.target.value)}>{['ZAR','USD','EUR','GBP','JPY','KWD'].map(c=><option key={c}>{c}</option>)}</select></label></PageHeader><div className="actions date-filters"><label>From<input aria-label="From date" type="date" value={start} onChange={e=>setStart(e.target.value)}/></label><label>To<input aria-label="To date" type="date" value={end} onChange={e=>setEnd(e.target.value)}/></label></div>{error?<Notice error>{error}</Notice>:loading?<p role="status">Loading financial overview…</p>:d&&<><div className="stat-grid">{[['Outstanding receivables',formatMoney(d.outstanding,currency),'Across the selected invoice period'],['Payments received',formatMoney(d.total_received,currency),'Gross positive receipts, including duplicates'],['Unallocated receipts',formatMoney(d.unallocated_amount,currency),`${d.unallocated_transactions} payments awaiting resolution`],['Overdue invoices',d.overdue_invoices,'Review disputes before following up']].map(([label,value,caption])=><article className="stat-card" key={label}><p>{label}</p><div className="stat-value">{value}</div><div className="stat-caption">{caption}</div></article>)}</div><div className="two-column"><section className="panel"><div className="panel-header"><h2>Receivables, by age</h2><Link className="muted" to="/collections">View collections</Link></div>{Object.entries(d.aging).map(([label,value])=><div className="aging-row" key={label}><div className="aging-label"><span>{label}</span><span className="money">{formatMoney(value,currency)}</span></div><div className="bar-track"><div className="bar-fill" style={{width:`${Math.min(100,Number(value)/Math.max(1,Number(d.outstanding))*100)}%`}}/></div></div>)}<p className="muted">As of {d.as_of}. Currencies are never combined.</p></section><section className="panel"><div className="panel-header"><h2>Your review queue</h2><Link className="muted" to="/investigations">Open workspace</Link></div><p className="queue-number">{d.pending_investigations}<span>cases awaiting resolution</span></p><div className="overview-strip"><div><strong>{d.completed_reconciliations}</strong><span>Reconciled</span></div><div><strong>{d.active_disputes}</strong><span>Active disputes</span></div><div><strong>{d.customers}</strong><span>Customers</span></div></div><Notice>All proposed allocations require a finance reviewer. Agent recommendations are checked against the ledger.</Notice></section></div><section className="panel"><div className="panel-header"><h2>Recent activity</h2><Link className="muted" to="/audit">View audit trail</Link></div>{d.recent_activity.length?d.recent_activity.map(a=><div className="activity-item" key={a.id}><div>{a.action.replaceAll('.',' · ')}<small>{a.record_id}</small></div><time className="muted">{new Date(a.created_at).toLocaleString()}</time></div>):<p className="empty">Your activity will appear here as work progresses.</p>}</section></>}</>
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { useData } from "../../hooks/useData";
+import { formatMoney } from "../../services/api";
+import { PageHeader, Notice } from "../../components/ui/Shared";
+import "./Dashboard.css";
+export default function Dashboard() {
+  const [currency, setCurrency] = useState("ZAR"),
+    [start, setStart] = useState(""),
+    [end, setEnd] = useState("");
+  const {
+    data: d,
+    error,
+    loading,
+  } = useData(
+    `/dashboard?currency=${currency}${start ? "&start=" + start : ""}${end ? "&end=" + end : ""}`,
+  );
+  return (
+    <>
+      <PageHeader
+        title="A clearer view of your receivables."
+        description="Reconcile with evidence. Resolve with confidence."
+      >
+        <label className="filter-label">
+          Currency
+          <select
+            value={currency}
+            onChange={(e) => setCurrency(e.target.value)}
+          >
+            {["ZAR", "USD", "EUR", "GBP", "JPY", "KWD"].map((c) => (
+              <option key={c}>{c}</option>
+            ))}
+          </select>
+        </label>
+      </PageHeader>
+      <div className="actions date-filters">
+        <label>
+          From
+          <input
+            aria-label="From date"
+            type="date"
+            value={start}
+            onChange={(e) => setStart(e.target.value)}
+          />
+        </label>
+        <label>
+          To
+          <input
+            aria-label="To date"
+            type="date"
+            value={end}
+            onChange={(e) => setEnd(e.target.value)}
+          />
+        </label>
+      </div>
+      {error ? (
+        <Notice error>{error}</Notice>
+      ) : loading ? (
+        <p role="status">Loading financial overview…</p>
+      ) : (
+        d && (
+          <>
+            <div className="stat-grid">
+              {[
+                [
+                  "Outstanding receivables",
+                  formatMoney(d.outstanding, currency),
+                  "Across the selected invoice period",
+                ],
+                [
+                  "Payments received",
+                  formatMoney(d.total_received, currency),
+                  "Gross positive receipts, including duplicates",
+                ],
+                [
+                  "Unallocated receipts",
+                  formatMoney(d.unallocated_amount, currency),
+                  `${d.unallocated_transactions} payments awaiting resolution`,
+                ],
+                [
+                  "Overdue invoices",
+                  d.overdue_invoices,
+                  "Review disputes before following up",
+                ],
+              ].map(([label, value, caption]) => (
+                <article className="stat-card" key={label}>
+                  <p>{label}</p>
+                  <div className="stat-value">{value}</div>
+                  <div className="stat-caption">{caption}</div>
+                </article>
+              ))}
+            </div>
+            <div className="two-column">
+              <section className="panel">
+                <div className="panel-header">
+                  <h2>Receivables, by age</h2>
+                  <Link className="muted" to="/collections">
+                    View collections
+                  </Link>
+                </div>
+                {Object.entries(d.aging).map(([label, value]) => (
+                  <div className="aging-row" key={label}>
+                    <div className="aging-label">
+                      <span>{label}</span>
+                      <span className="money">
+                        {formatMoney(value, currency)}
+                      </span>
+                    </div>
+                    <div className="bar-track">
+                      <div
+                        className="bar-fill"
+                        style={{
+                          width: `${Math.min(100, (Number(value) / Math.max(1, Number(d.outstanding))) * 100)}%`,
+                        }}
+                      />
+                    </div>
+                  </div>
+                ))}
+                <p className="muted">
+                  As of {d.as_of}. Currencies are never combined.
+                </p>
+              </section>
+              <section className="panel">
+                <div className="panel-header">
+                  <h2>Your review queue</h2>
+                  <Link className="muted" to="/investigations">
+                    Open workspace
+                  </Link>
+                </div>
+                <p className="queue-number">
+                  {d.pending_investigations}
+                  <span>cases awaiting resolution</span>
+                </p>
+                <div className="overview-strip">
+                  <div>
+                    <strong>{d.completed_reconciliations}</strong>
+                    <span>Reconciled</span>
+                  </div>
+                  <div>
+                    <strong>{d.active_disputes}</strong>
+                    <span>Active disputes</span>
+                  </div>
+                  <div>
+                    <strong>{d.customers}</strong>
+                    <span>Customers</span>
+                  </div>
+                </div>
+                <Notice>
+                  All proposed allocations require a finance reviewer. Agent
+                  recommendations are checked against the ledger.
+                </Notice>
+              </section>
+            </div>
+            <section className="panel">
+              <div className="panel-header">
+                <h2>Recent activity</h2>
+                <Link className="muted" to="/audit">
+                  View audit trail
+                </Link>
+              </div>
+              {d.recent_activity.length ? (
+                d.recent_activity.map((a) => (
+                  <div className="activity-item" key={a.id}>
+                    <div>
+                      {a.action.replaceAll(".", " · ")}
+                      <small>{a.record_id}</small>
+                    </div>
+                    <time className="muted">
+                      {new Date(a.created_at).toLocaleString()}
+                    </time>
+                  </div>
+                ))
+              ) : (
+                <p className="empty">
+                  Your activity will appear here as work progresses.
+                </p>
+              )}
+            </section>
+          </>
+        )
+      )}
+    </>
+  );
 }

@@ -37,3 +37,26 @@ def test_customer_provisioning_contract(client):
     )
     assert response.status_code == 200
     assert client.get("/api/customers/" + response.json()["id"]).status_code == 200
+
+
+def test_specific_report_and_integration_routes_are_reachable(client):
+    assert client.get("/api/reports/evaluation").status_code == 200
+    assert client.get("/api/integrations/model-health").json()["status"] == "not_executed"
+
+
+def test_customer_filter_is_scoped(client, db, user):
+    from app.models.entities import Customer
+
+    db.add(
+        Customer(
+            id="empty-customer",
+            org_id=user.org_id,
+            name="Empty",
+            account="EMPTY",
+            email="empty@example.com",
+        )
+    )
+    db.commit()
+    assert client.get("/api/invoices?customer_id=customer").json()["total"] == 1
+    assert client.get("/api/invoices?customer_id=empty-customer").json()["total"] == 0
+    assert client.get("/api/invoices?customer_id=foreign-customer").status_code == 404

@@ -1,5 +1,64 @@
-import {useState} from 'react'
-import {PageHeader,ResourceTable,ImportDialog,DetailDialog,TransactionReview} from '../../components/ui/Shared'
-import {useAuth} from '../../context/Auth'
-import './Transactions.css'
-export default function Transactions(){const [open,setOpen]=useState(false),[selected,setSelected]=useState(null);const {user}=useAuth();return <><PageHeader title="Transactions" description="Bank receipts, references and allocation provenance.">{user.role!=='viewer'&&<button onClick={()=>setOpen(true)}>Import transactions</button>}</PageHeader><ResourceTable key={String(open)} resource="transactions" columns={[["source_id","Source ID"],["reference","Reference"],["amount","Amount"],["unallocated","Unallocated"],["payment_date","Payment date"],["status","Status"]]} onSelect={setSelected}/>{open&&<ImportDialog kind="transactions" onClose={()=>setOpen(false)}/>}<h2>Import history</h2><ResourceTable resource="imports" columns={[["filename","Source file"],["kind","Type"],["status","Status"],["created_at","Imported"]]} onSelect={r=>setSelected({...r,_import:true})}/>{selected&&(selected._import?<DetailDialog resource="imports" row={selected} onClose={()=>setSelected(null)}/>:<TransactionReview row={selected} onClose={()=>setSelected(null)}/>)}</>}
+import { useState } from "react";
+import {
+  PageHeader,
+  ResourceTable,
+  ImportDialog,
+  DetailDialog,
+  TransactionReview,
+} from "../../components/ui/Shared";
+import { useAuth } from "../../context/Auth";
+import "./Transactions.css";
+export default function Transactions() {
+  const [open, setOpen] = useState(false),
+    [selected, setSelected] = useState(null);
+  const { user } = useAuth();
+  return (
+    <>
+      <PageHeader
+        title="Transactions"
+        description="Bank receipts, references and allocation provenance."
+      >
+        {user.role !== "viewer" && (
+          <button onClick={() => setOpen(true)}>Import transactions</button>
+        )}
+      </PageHeader>
+      <ResourceTable
+        key={String(open)}
+        resource="transactions"
+        columns={[
+          ["source_id", "Source ID"],
+          ["reference", "Reference"],
+          ["amount", "Amount"],
+          ["unallocated", "Unallocated"],
+          ["payment_date", "Payment date"],
+          ["status", "Status"],
+        ]}
+        onSelect={setSelected}
+      />
+      {open && (
+        <ImportDialog kind="transactions" onClose={() => setOpen(false)} />
+      )}
+      <h2>Import history</h2>
+      <ResourceTable
+        resource="imports"
+        columns={[
+          ["filename", "Source file"],
+          ["kind", "Type"],
+          ["status", "Status"],
+          ["created_at", "Imported"],
+        ]}
+        onSelect={(r) => setSelected({ ...r, _import: true })}
+      />
+      {selected &&
+        (selected._import ? (
+          <DetailDialog
+            resource="imports"
+            row={selected}
+            onClose={() => setSelected(null)}
+          />
+        ) : (
+          <TransactionReview row={selected} onClose={() => setSelected(null)} />
+        ))}
+    </>
+  );
+}

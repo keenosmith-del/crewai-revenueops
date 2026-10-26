@@ -1,7 +1,103 @@
-import {NavLink,Outlet} from 'react-router-dom'
-import {LayoutDashboard,FileText,Landmark,GitCompareArrows,SearchCheck,Users,Layers,Mail,ChartNoAxesCombined,History,Settings,LogOut,Menu} from 'lucide-react'
-import {useState} from 'react'
-import {useAuth} from '../context/Auth'
-const links=[['/','Overview',LayoutDashboard],['/invoices','Invoices',FileText],['/transactions','Transactions',Landmark],['/reconciliation','Reconciliation',GitCompareArrows],['/investigations','Investigations',SearchCheck],['/customers','Customers',Users],['/agents','Agent workspace',Layers],['/collections','Collections',Mail],['/reports','Reports',ChartNoAxesCombined],['/audit','Audit trail',History],['/settings','Settings',Settings]]
-export default function Shell(){const {user,logout}=useAuth();const [open,setOpen]=useState(false);return <div className="app-shell"><aside className={open?'sidebar open':'sidebar'}><LinkBrand/><p className="workspace-label">Northstar workspace</p><nav aria-label="Main navigation">{links.map(([path,label,Icon])=><NavLink key={path} to={path} end={path==='/'} onClick={()=>setOpen(false)}><Icon size={18}/>{label}</NavLink>)}</nav><div className="sidebar-foot"><span className="avatar">{user.role[0].toUpperCase()}</span><div><strong>Finance {user.role}</strong><small>{user.email}</small></div><button className="icon-button" onClick={logout} aria-label="Sign out"><LogOut size={17}/></button></div></aside><div className="main-column"><div className="topbar"><button className="mobile-menu icon-button" aria-label="Toggle navigation" onClick={()=>setOpen(!open)}><Menu size={21}/></button><span>RevenueOps Intelligence</span><span className="environment-pill">{user.synthetic?'Synthetic demonstration':'Finance workspace'}</span></div><main id="main"><Outlet/></main><footer className="app-footer">Financial truth in the ledger. Judgment with your team.</footer></div></div>}
-function LinkBrand(){return <div className="brand"><div className="brand-symbol">r<span>o</span></div><div>RevenueOps<small>Intelligence</small></div></div>}
+import { NavLink, Outlet } from "react-router-dom";
+import {
+  LayoutDashboard,
+  FileText,
+  Landmark,
+  GitCompareArrows,
+  SearchCheck,
+  Users,
+  Layers,
+  Mail,
+  ChartNoAxesCombined,
+  History,
+  Settings,
+  LogOut,
+  Menu,
+} from "lucide-react";
+import { useState } from "react";
+import { useAuth } from "../context/Auth";
+const links = [
+  ["/", "Overview", LayoutDashboard],
+  ["/invoices", "Invoices", FileText],
+  ["/transactions", "Transactions", Landmark],
+  ["/reconciliation", "Reconciliation", GitCompareArrows],
+  ["/investigations", "Investigations", SearchCheck],
+  ["/customers", "Customers", Users],
+  ["/agents", "Agent workspace", Layers],
+  ["/collections", "Collections", Mail],
+  ["/reports", "Reports", ChartNoAxesCombined],
+  ["/audit", "Audit trail", History],
+  ["/settings", "Settings", Settings],
+];
+export default function Shell() {
+  const { user, logout } = useAuth();
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="app-shell">
+      <aside className={open ? "sidebar open" : "sidebar"}>
+        <LinkBrand />
+        <p className="workspace-label">Northstar workspace</p>
+        <nav aria-label="Main navigation">
+          {links.map(([path, label, Icon]) => (
+            <NavLink
+              key={path}
+              to={path}
+              end={path === "/"}
+              onClick={() => setOpen(false)}
+            >
+              <Icon size={18} />
+              {label}
+            </NavLink>
+          ))}
+        </nav>
+        <div className="sidebar-foot">
+          <span className="avatar">{user.role[0].toUpperCase()}</span>
+          <div>
+            <strong>Finance {user.role}</strong>
+            <small>{user.email}</small>
+          </div>
+          <button
+            className="icon-button"
+            onClick={logout}
+            aria-label="Sign out"
+          >
+            <LogOut size={17} />
+          </button>
+        </div>
+      </aside>
+      <div className="main-column">
+        <div className="topbar">
+          <button
+            className="mobile-menu icon-button"
+            aria-label="Toggle navigation"
+            onClick={() => setOpen(!open)}
+          >
+            <Menu size={21} />
+          </button>
+          <span>RevenueOps Intelligence</span>
+          <span className="environment-pill">
+            {user.synthetic ? "Synthetic demonstration" : "Finance workspace"}
+          </span>
+        </div>
+        <main id="main">
+          <Outlet />
+        </main>
+        <footer className="app-footer">
+          Financial truth in the ledger. Judgment with your team.
+        </footer>
+      </div>
+    </div>
+  );
+}
+function LinkBrand() {
+  return (
+    <div className="brand">
+      <div className="brand-symbol">
+        r<span>o</span>
+      </div>
+      <div>
+        RevenueOps<small>Intelligence</small>
+      </div>
+    </div>
+  );
+}

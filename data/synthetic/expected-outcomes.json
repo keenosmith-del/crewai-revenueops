@@ -1,0 +1,23 @@
+{
+  "source": "Fixed arithmetic seed, no random financial values; before any allocations",
+  "synthetic": true,
+  "customers": 10,
+  "invoices": 150,
+  "transactions": 120,
+  "currency": "ZAR",
+  "total_invoiced": "563475.000",
+  "gross_positive_receipts": "324644.750",
+  "classifications": {
+    "amount_customer": 20,
+    "combined": 5,
+    "disputed": 4,
+    "duplicate": 5,
+    "exact": 57,
+    "overpayment": 9,
+    "partial": 10,
+    "reversal": 5,
+    "unmatched": 5
+  },
+  "automatic_allocations": 0,
+  "required_human_review": 120
+}

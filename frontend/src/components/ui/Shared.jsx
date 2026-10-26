@@ -1,56 +1,615 @@
-import {useEffect,useRef,useState} from 'react'
-import {Link} from 'react-router-dom'
-import {Search,ChevronLeft,ChevronRight,X} from 'lucide-react'
-import {useData} from '../../hooks/useData'
-import {api,formatMoney,post} from '../../services/api'
-import {useAuth} from '../../context/Auth'
-export function Status({value}){return <span className={`status ${['failed','disputed','rejected','duplicate','reversal'].includes(value)?'attention':''}`}>{String(value || '—').replaceAll('_',' ')}</span>}
-export function PageHeader({eyebrow='Finance operations',title,description,children}){return <header className="page-header"><div><p className="eyebrow">{eyebrow}</p><h1>{title}</h1><p className="muted">{description}</p></div><div className="actions">{children}</div></header>}
-export function Notice({error,children}){return <div className={error?'notice error':'notice'} role={error?'alert':'status'}>{children}</div>}
-export function JsonView({value}){return <pre className="json-view">{JSON.stringify(value,null,2)}</pre>}
-export function Modal({title,children,onClose}){
- const ref=useRef(null)
- useEffect(()=>{const dialog=ref.current;dialog.showModal();return()=>dialog.close()},[])
- return <dialog ref={ref} onCancel={onClose}><div className="modal-heading"><h2>{title}</h2><button className="icon-button" aria-label="Close" onClick={onClose}><X size={20}/></button></div>{children}</dialog>
+import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import { Search, ChevronLeft, ChevronRight, X } from "lucide-react";
+import { useData } from "../../hooks/useData";
+import { api, formatMoney, post } from "../../services/api";
+import { useAuth } from "../../context/Auth";
+export function Status({ value }) {
+  return (
+    <span
+      className={`status ${["failed", "disputed", "rejected", "duplicate", "reversal"].includes(value) ? "attention" : ""}`}
+    >
+      {String(value || "—").replaceAll("_", " ")}
+    </span>
+  );
 }
-function Cell({value,column,row}){
- if(column==='status')return <Status value={value}/>
- if(['amount','outstanding','unallocated'].includes(column))return <span className="money">{formatMoney(value,row.currency)}</span>
- if(['proposal','detail','summary','result','checkpoint','usage'].includes(column))return <span className="muted">{Object.keys(value || {}).length} fields</span>
- if(column==='reference' && row.due_date)return <Link to={`/invoices/${row.id}`}>{value}</Link>
- if(column==='name')return <Link to={`/customers/${row.id}`}>{value}</Link>
- if(column==='created_at')return <time>{new Date(value).toLocaleString('en-ZA',{dateStyle:'medium',timeStyle:'short'})}</time>
- return <span title={typeof value==='object'?JSON.stringify(value):String(value ?? '')}>{typeof value==='boolean'?(value?'Yes':'No'):typeof value==='object'?JSON.stringify(value):String(value ?? '—')}</span>
+export function PageHeader({
+  eyebrow = "Finance operations",
+  title,
+  description,
+  children,
+}) {
+  return (
+    <header className="page-header">
+      <div>
+        <p className="eyebrow">{eyebrow}</p>
+        <h1>{title}</h1>
+        <p className="muted">{description}</p>
+      </div>
+      <div className="actions">{children}</div>
+    </header>
+  );
 }
-export function ResourceTable({resource,columns,actions,onSelect,extra=''}){
- const [q,setQ]=useState(''),[status,setStatus]=useState(''),[page,setPage]=useState(1),[sort,setSort]=useState(''),[direction,setDirection]=useState('asc')
- const path=`/${resource}?q=${encodeURIComponent(q)}&status=${status}&page=${page}&sort=${sort}&direction=${direction}${extra}`
- const {data,error,loading,reload}=useData(path)
- return <section className="panel"><div className="table-toolbar"><label className="search"><Search size={17}/><input aria-label={`Search ${resource}`} placeholder={`Search ${resource.replaceAll('-',' ')}…`} value={q} onChange={e=>{setQ(e.target.value);setPage(1)}}/></label><label className="filter-label">Status<select aria-label="Filter status" value={status} onChange={e=>{setStatus(e.target.value);setPage(1)}}><option value="">All statuses</option>{['open','overdue','paid','unallocated','allocated','human_review','needs_information','rejected','queued','running','completed','failed','not_executed','draft','approved_not_sent','preview','confirmed'].map(s=><option key={s} value={s}>{s.replaceAll('_',' ')}</option>)}</select></label><button className="secondary" onClick={reload}>Refresh</button></div>
- {error?<Notice error>{error}</Notice>:loading?<p className="empty" role="status">Loading records…</p>:<><div className="table-scroll"><table><thead><tr>{columns.map(([key,label])=><th key={key}><button className="sort" onClick={()=>{setSort(key);setDirection(direction==='asc'?'desc':'asc')}}>{label}{sort===key?(direction==='asc'?' ↑':' ↓'):''}</button></th>)}{(actions||onSelect)&&<th>Review</th>}</tr></thead><tbody>{data?.items.map(row=><tr key={row.id}>{columns.map(([key])=><td key={key}><Cell value={row[key]} column={key} row={row}/></td>)}{(actions||onSelect)&&<td>{actions?.(row,reload)}{onSelect&&<button className="text-button" onClick={()=>onSelect(row,reload)}>View details</button>}</td>}</tr>)}</tbody></table></div>{!data?.items.length&&<p className="empty">No records match this view.</p>}<footer className="pagination"><span>{data?.total || 0} records · Page {page}</span><div><button aria-label="Previous page" disabled={page===1} onClick={()=>setPage(p=>p-1)}><ChevronLeft size={16}/></button><button aria-label="Next page" disabled={page*25>=(data?.total||0)} onClick={()=>setPage(p=>p+1)}><ChevronRight size={16}/></button></div></footer></>}
- </section>
+export function Notice({ error, children }) {
+  return (
+    <div
+      className={error ? "notice error" : "notice"}
+      role={error ? "alert" : "status"}
+    >
+      {children}
+    </div>
+  );
 }
-export function ImportDialog({kind,onClose}){
- const [file,setFile]=useState(null),[mapping,setMapping]=useState('{}'),[preview,setPreview]=useState(null),[error,setError]=useState(''),[busy,setBusy]=useState(false)
- async function submit(e){e.preventDefault();setBusy(true);setError('');try{const form=new FormData();form.append('file',file);form.append('mapping',mapping);setPreview(await post(`/imports/${kind}/preview`,form))}catch(e){setError(e.message)}finally{setBusy(false)}}
- async function confirm(){setBusy(true);try{setPreview(await post(`/imports/${preview.id}/confirm`))}catch(e){setError(e.message)}finally{setBusy(false)}}
- return <Modal title={`Import ${kind}`} onClose={onClose}><p>UTF-8 CSV, up to 2 MB and 5,000 rows. Validate every row before confirming.</p><p className="muted">{kind==='invoices'?'reference, account, amount, currency, issue_date, due_date':'source_id, account, reference, amount, currency, payment_date'}</p><form onSubmit={submit}><label>CSV file<input required type="file" accept=".csv,text/csv" onChange={e=>{setFile(e.target.files[0]);setPreview(null)}}/></label><label>Column mapping (canonical name → your column)<textarea value={mapping} onChange={e=>setMapping(e.target.value)}/></label><button disabled={busy||!file}>Validate preview</button></form>{error&&<Notice error>{error}</Notice>}{preview&&<><h3>Validation preview</h3><p>{preview.rows.length} valid rows · {preview.errors.length} errors · <Status value={preview.status}/></p><JsonView value={preview.errors.length?preview.errors:preview.rows.slice(0,5)}/><button disabled={busy||preview.errors.length>0||preview.status==='confirmed'} onClick={confirm}>Confirm import</button></>}</Modal>
+export function JsonView({ value }) {
+  return <pre className="json-view">{JSON.stringify(value, null, 2)}</pre>;
 }
-export function DetailDialog({resource,row,onClose}){
- const {data,error,loading}=useData(`/${resource}/${row.id}`)
- return <Modal title="Record details" onClose={onClose}>{loading?<p>Loading…</p>:error?<Notice error>{error}</Notice>:<JsonView value={data}/>}</Modal>
+export function Modal({ title, children, onClose }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    const dialog = ref.current;
+    dialog.showModal();
+    return () => dialog.close();
+  }, []);
+  return (
+    <dialog ref={ref} onCancel={onClose}>
+      <div className="modal-heading">
+        <h2>{title}</h2>
+        <button className="icon-button" aria-label="Close" onClick={onClose}>
+          <X size={20} />
+        </button>
+      </div>
+      {children}
+    </dialog>
+  );
 }
-export function InvestigationReview({row,onClose,onSaved}){
- const {user}=useAuth(),[caseData,setCaseData]=useState(row),[note,setNote]=useState(''),[allocations,setAllocations]=useState(row.proposal?.allocations || []),[error,setError]=useState(''),[busy,setBusy]=useState(false)
- const invoices=useData('/invoices?page_size=200')
- const canReview=['admin','reviewer'].includes(user.role)
- function change(index,key,value){setAllocations(items=>items.map((item,i)=>i===index?{...item,[key]:value}:item))}
- async function decide(decision){setBusy(true);setError('');try{await post(`/investigations/${row.id}/review`,{decision,note,allocations:decision==='approve'?allocations:null},{'Idempotency-Key':crypto.randomUUID()});onSaved();onClose()}catch(e){setError(e.message)}finally{setBusy(false)}}
- async function run(purpose='run'){setBusy(true);try{const result=await post(`/investigations/${row.id}/${purpose}`);setCaseData({...caseData,execution:result});onSaved()}catch(e){setError(e.message)}finally{setBusy(false)}}
- return <Modal title="Investigation review" onClose={onClose}><p><Status value={caseData.status}/> <span className="muted">{row.classification.replaceAll('_',' ')}</span></p><p>{row.explanation}</p><p className="muted">Payment: {row.transaction_id} · {row.proposal?.currency}</p><div className="actions"><button className="secondary" disabled={busy||user.role==='viewer'} onClick={()=>run()}>Request CrewAI investigation</button><button className="text-button" disabled={busy||user.role==='viewer'} onClick={()=>run('collections-run')}>Request collections review</button></div>{caseData.execution&&<Notice>{caseData.execution.status.replaceAll('_',' ')} · {caseData.execution.error || 'Follow progress in the Agent workspace.'}</Notice>}<hr/><h3>Proposed allocations</h3>{allocations.map((item,index)=><div className="allocation-row" key={index}><label>Invoice<select aria-label={`Allocation invoice ${index+1}`} value={item.invoice_id} onChange={e=>change(index,'invoice_id',e.target.value)} disabled={!canReview}><option value="">Select an invoice</option>{invoices.data?.items.map(i=><option key={i.id} value={i.id}>{i.reference} · {formatMoney(i.outstanding,i.currency)}</option>)}</select></label><label>Amount<input aria-label={`Allocation amount ${index+1}`} inputMode="decimal" value={item.amount} onChange={e=>change(index,'amount',e.target.value)} disabled={!canReview}/></label><button aria-label={`Remove allocation ${index+1}`} className="icon-button" disabled={!canReview} onClick={()=>setAllocations(items=>items.filter((_,i)=>i!==index))}><X size={17}/></button></div>)}{!allocations.length&&<p className="muted">No supported allocation proposed. Review the evidence or request more information.</p>}{canReview&&<button className="secondary" onClick={()=>setAllocations(items=>[...items,{invoice_id:'',amount:''}])}>Add allocation</button>}<label className="section-space">Review note<textarea value={note} onChange={e=>setNote(e.target.value)} placeholder="Explain your decision"/></label><details><summary>Supporting evidence and validation</summary><JsonView value={caseData.proposal}/></details><p className="muted">Approval revalidates the customer, currency, disputes and available balances. Communications remain disabled.</p>{error&&<Notice error>{error}</Notice>}<div className="actions"><button disabled={busy||!canReview||note.length<3||row.status==='allocated'||!allocations.length} onClick={()=>decide('approve')}>Approve allocation</button><button className="secondary" disabled={busy||!canReview||note.length<3} onClick={()=>decide('reject')}>Reject</button><button className="text-button" disabled={busy||!canReview||note.length<3} onClick={()=>decide('request_information')}>Request information</button></div></Modal>
+function Cell({ value, column, row }) {
+  if (column === "status") return <Status value={value} />;
+  if (["amount", "outstanding", "unallocated"].includes(column))
+    return <span className="money">{formatMoney(value, row.currency)}</span>;
+  if (
+    ["proposal", "detail", "summary", "result", "checkpoint", "usage"].includes(
+      column,
+    )
+  )
+    return (
+      <span className="muted">{Object.keys(value || {}).length} fields</span>
+    );
+  if (column === "reference" && row.due_date)
+    return <Link to={`/invoices/${row.id}`}>{value}</Link>;
+  if (column === "name")
+    return <Link to={`/customers/${row.id}`}>{value}</Link>;
+  if (column === "created_at")
+    return (
+      <time>
+        {new Date(value).toLocaleString("en-ZA", {
+          dateStyle: "medium",
+          timeStyle: "short",
+        })}
+      </time>
+    );
+  return (
+    <span
+      title={
+        typeof value === "object" ? JSON.stringify(value) : String(value ?? "")
+      }
+    >
+      {typeof value === "boolean"
+        ? value
+          ? "Yes"
+          : "No"
+        : typeof value === "object"
+          ? JSON.stringify(value)
+          : String(value ?? "—")}
+    </span>
+  );
 }
-export function TransactionReview({row,onClose}){
- const {user}=useAuth(),customers=useData('/customers?page_size=200'),[customer,setCustomer]=useState(row.customer_id || ''),[note,setNote]=useState(''),[message,setMessage]=useState(''),[error,setError]=useState('')
- async function verify(e){e.preventDefault();setError('');try{await post(`/transactions/${row.id}/verify-account`,{customer_id:customer,note});setMessage('Customer account verified and recorded in the audit trail.')}catch(e){setError(e.message)}}
- return <Modal title="Transaction evidence" onClose={onClose}><JsonView value={row}/>{['admin','reviewer'].includes(user.role)&&<form onSubmit={verify}><h3>Verify customer account</h3><label>Customer<select value={customer} onChange={e=>setCustomer(e.target.value)} required><option value="">Choose verified customer</option>{customers.data?.items.map(c=><option key={c.id} value={c.id}>{c.name} · {c.account}</option>)}</select></label><label>Verification evidence<textarea required minLength={5} value={note} onChange={e=>setNote(e.target.value)}/></label><button>Record verified account</button></form>}{error&&<Notice error>{error}</Notice>}{message&&<Notice>{message}</Notice>}</Modal>
+export function ResourceTable({
+  resource,
+  columns,
+  actions,
+  onSelect,
+  extra = "",
+}) {
+  const [q, setQ] = useState(""),
+    [status, setStatus] = useState(""),
+    [page, setPage] = useState(1),
+    [sort, setSort] = useState(""),
+    [direction, setDirection] = useState("asc");
+  const path = `/${resource}?q=${encodeURIComponent(q)}&status=${status}&page=${page}&sort=${sort}&direction=${direction}${extra}`;
+  const { data, error, loading, reload } = useData(path);
+  return (
+    <section className="panel">
+      <div className="table-toolbar">
+        <label className="search">
+          <Search size={17} />
+          <input
+            aria-label={`Search ${resource}`}
+            placeholder={`Search ${resource.replaceAll("-", " ")}…`}
+            value={q}
+            onChange={(e) => {
+              setQ(e.target.value);
+              setPage(1);
+            }}
+          />
+        </label>
+        <label className="filter-label">
+          Status
+          <select
+            aria-label="Filter status"
+            value={status}
+            onChange={(e) => {
+              setStatus(e.target.value);
+              setPage(1);
+            }}
+          >
+            <option value="">All statuses</option>
+            {[
+              "open",
+              "overdue",
+              "paid",
+              "unallocated",
+              "allocated",
+              "human_review",
+              "needs_information",
+              "rejected",
+              "queued",
+              "running",
+              "completed",
+              "failed",
+              "not_executed",
+              "draft",
+              "approved_not_sent",
+              "preview",
+              "confirmed",
+            ].map((s) => (
+              <option key={s} value={s}>
+                {s.replaceAll("_", " ")}
+              </option>
+            ))}
+          </select>
+        </label>
+        <button className="secondary" onClick={reload}>
+          Refresh
+        </button>
+      </div>
+      {error ? (
+        <Notice error>{error}</Notice>
+      ) : loading ? (
+        <p className="empty" role="status">
+          Loading records…
+        </p>
+      ) : (
+        <>
+          <div className="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  {columns.map(([key, label]) => (
+                    <th key={key}>
+                      <button
+                        className="sort"
+                        onClick={() => {
+                          setSort(key);
+                          setDirection(direction === "asc" ? "desc" : "asc");
+                        }}
+                      >
+                        {label}
+                        {sort === key
+                          ? direction === "asc"
+                            ? " ↑"
+                            : " ↓"
+                          : ""}
+                      </button>
+                    </th>
+                  ))}
+                  {(actions || onSelect) && <th>Review</th>}
+                </tr>
+              </thead>
+              <tbody>
+                {data?.items.map((row) => (
+                  <tr key={row.id}>
+                    {columns.map(([key]) => (
+                      <td key={key}>
+                        <Cell value={row[key]} column={key} row={row} />
+                      </td>
+                    ))}
+                    {(actions || onSelect) && (
+                      <td>
+                        {actions?.(row, reload)}
+                        {onSelect && (
+                          <button
+                            className="text-button"
+                            onClick={() => onSelect(row, reload)}
+                          >
+                            View details
+                          </button>
+                        )}
+                      </td>
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {!data?.items.length && (
+            <p className="empty">No records match this view.</p>
+          )}
+          <footer className="pagination">
+            <span>
+              {data?.total || 0} records · Page {page}
+            </span>
+            <div>
+              <button
+                aria-label="Previous page"
+                disabled={page === 1}
+                onClick={() => setPage((p) => p - 1)}
+              >
+                <ChevronLeft size={16} />
+              </button>
+              <button
+                aria-label="Next page"
+                disabled={page * 25 >= (data?.total || 0)}
+                onClick={() => setPage((p) => p + 1)}
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          </footer>
+        </>
+      )}
+    </section>
+  );
+}
+export function ImportDialog({ kind, onClose }) {
+  const [file, setFile] = useState(null),
+    [mapping, setMapping] = useState("{}"),
+    [preview, setPreview] = useState(null),
+    [error, setError] = useState(""),
+    [busy, setBusy] = useState(false);
+  async function submit(e) {
+    e.preventDefault();
+    setBusy(true);
+    setError("");
+    try {
+      const form = new FormData();
+      form.append("file", file);
+      form.append("mapping", mapping);
+      setPreview(await post(`/imports/${kind}/preview`, form));
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setBusy(false);
+    }
+  }
+  async function confirm() {
+    setBusy(true);
+    try {
+      setPreview(await post(`/imports/${preview.id}/confirm`));
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setBusy(false);
+    }
+  }
+  return (
+    <Modal title={`Import ${kind}`} onClose={onClose}>
+      <p>
+        UTF-8 CSV, up to 2 MB and 5,000 rows. Validate every row before
+        confirming.
+      </p>
+      <p className="muted">
+        {kind === "invoices"
+          ? "reference, account, amount, currency, issue_date, due_date"
+          : "source_id, account, reference, amount, currency, payment_date"}
+      </p>
+      <form onSubmit={submit}>
+        <label>
+          CSV file
+          <input
+            required
+            type="file"
+            accept=".csv,text/csv"
+            onChange={(e) => {
+              setFile(e.target.files[0]);
+              setPreview(null);
+            }}
+          />
+        </label>
+        <label>
+          Column mapping (canonical name → your column)
+          <textarea
+            value={mapping}
+            onChange={(e) => setMapping(e.target.value)}
+          />
+        </label>
+        <button disabled={busy || !file}>Validate preview</button>
+      </form>
+      {error && <Notice error>{error}</Notice>}
+      {preview && (
+        <>
+          <h3>Validation preview</h3>
+          <p>
+            {preview.rows.length} valid rows · {preview.errors.length} errors ·{" "}
+            <Status value={preview.status} />
+          </p>
+          <JsonView
+            value={
+              preview.errors.length ? preview.errors : preview.rows.slice(0, 5)
+            }
+          />
+          <button
+            disabled={
+              busy ||
+              preview.errors.length > 0 ||
+              preview.status === "confirmed"
+            }
+            onClick={confirm}
+          >
+            Confirm import
+          </button>
+        </>
+      )}
+    </Modal>
+  );
+}
+export function DetailDialog({ resource, row, onClose }) {
+  const { data, error, loading } = useData(`/${resource}/${row.id}`);
+  return (
+    <Modal title="Record details" onClose={onClose}>
+      {loading ? (
+        <p>Loading…</p>
+      ) : error ? (
+        <Notice error>{error}</Notice>
+      ) : (
+        <JsonView value={data} />
+      )}
+    </Modal>
+  );
+}
+export function InvestigationReview({ row, onClose, onSaved }) {
+  const { user } = useAuth(),
+    [caseData, setCaseData] = useState(row),
+    [note, setNote] = useState(""),
+    [allocations, setAllocations] = useState(row.proposal?.allocations || []),
+    [error, setError] = useState(""),
+    [busy, setBusy] = useState(false);
+  const invoices = useData("/invoices?page_size=200");
+  const canReview = ["admin", "reviewer"].includes(user.role);
+  function change(index, key, value) {
+    setAllocations((items) =>
+      items.map((item, i) => (i === index ? { ...item, [key]: value } : item)),
+    );
+  }
+  async function decide(decision) {
+    setBusy(true);
+    setError("");
+    try {
+      await post(
+        `/investigations/${row.id}/review`,
+        {
+          decision,
+          note,
+          allocations: decision === "approve" ? allocations : null,
+        },
+        { "Idempotency-Key": crypto.randomUUID() },
+      );
+      onSaved();
+      onClose();
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setBusy(false);
+    }
+  }
+  async function run(purpose = "run") {
+    setBusy(true);
+    try {
+      const result = await post(`/investigations/${row.id}/${purpose}`);
+      setCaseData({ ...caseData, execution: result });
+      onSaved();
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setBusy(false);
+    }
+  }
+  return (
+    <Modal title="Investigation review" onClose={onClose}>
+      <p>
+        <Status value={caseData.status} />{" "}
+        <span className="muted">{row.classification.replaceAll("_", " ")}</span>
+      </p>
+      <p>{row.explanation}</p>
+      <p className="muted">
+        Payment: {row.transaction_id} · {row.proposal?.currency}
+      </p>
+      <div className="actions">
+        <button
+          className="secondary"
+          disabled={busy || user.role === "viewer"}
+          onClick={() => run()}
+        >
+          Request CrewAI investigation
+        </button>
+        <button
+          className="text-button"
+          disabled={busy || user.role === "viewer"}
+          onClick={() => run("collections-run")}
+        >
+          Request collections review
+        </button>
+      </div>
+      {caseData.execution && (
+        <Notice>
+          {caseData.execution.status.replaceAll("_", " ")} ·{" "}
+          {caseData.execution.error ||
+            "Follow progress in the Agent workspace."}
+        </Notice>
+      )}
+      <hr />
+      <h3>Proposed allocations</h3>
+      {allocations.map((item, index) => (
+        <div className="allocation-row" key={index}>
+          <label>
+            Invoice
+            <select
+              aria-label={`Allocation invoice ${index + 1}`}
+              value={item.invoice_id}
+              onChange={(e) => change(index, "invoice_id", e.target.value)}
+              disabled={!canReview}
+            >
+              <option value="">Select an invoice</option>
+              {invoices.data?.items.map((i) => (
+                <option key={i.id} value={i.id}>
+                  {i.reference} · {formatMoney(i.outstanding, i.currency)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Amount
+            <input
+              aria-label={`Allocation amount ${index + 1}`}
+              inputMode="decimal"
+              value={item.amount}
+              onChange={(e) => change(index, "amount", e.target.value)}
+              disabled={!canReview}
+            />
+          </label>
+          <button
+            aria-label={`Remove allocation ${index + 1}`}
+            className="icon-button"
+            disabled={!canReview}
+            onClick={() =>
+              setAllocations((items) => items.filter((_, i) => i !== index))
+            }
+          >
+            <X size={17} />
+          </button>
+        </div>
+      ))}
+      {!allocations.length && (
+        <p className="muted">
+          No supported allocation proposed. Review the evidence or request more
+          information.
+        </p>
+      )}
+      {canReview && (
+        <button
+          className="secondary"
+          onClick={() =>
+            setAllocations((items) => [
+              ...items,
+              { invoice_id: "", amount: "" },
+            ])
+          }
+        >
+          Add allocation
+        </button>
+      )}
+      <label className="section-space">
+        Review note
+        <textarea
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+          placeholder="Explain your decision"
+        />
+      </label>
+      <details>
+        <summary>Supporting evidence and validation</summary>
+        <JsonView value={caseData.proposal} />
+      </details>
+      <p className="muted">
+        Approval revalidates the customer, currency, disputes and available
+        balances. Communications remain disabled.
+      </p>
+      {error && <Notice error>{error}</Notice>}
+      <div className="actions">
+        <button
+          disabled={
+            busy ||
+            !canReview ||
+            note.length < 3 ||
+            row.status === "allocated" ||
+            !allocations.length
+          }
+          onClick={() => decide("approve")}
+        >
+          Approve allocation
+        </button>
+        <button
+          className="secondary"
+          disabled={busy || !canReview || note.length < 3}
+          onClick={() => decide("reject")}
+        >
+          Reject
+        </button>
+        <button
+          className="text-button"
+          disabled={busy || !canReview || note.length < 3}
+          onClick={() => decide("request_information")}
+        >
+          Request information
+        </button>
+      </div>
+    </Modal>
+  );
+}
+export function TransactionReview({ row, onClose }) {
+  const { user } = useAuth(),
+    customers = useData("/customers?page_size=200"),
+    [customer, setCustomer] = useState(row.customer_id || ""),
+    [note, setNote] = useState(""),
+    [message, setMessage] = useState(""),
+    [error, setError] = useState("");
+  async function verify(e) {
+    e.preventDefault();
+    setError("");
+    try {
+      await post(`/transactions/${row.id}/verify-account`, {
+        customer_id: customer,
+        note,
+      });
+      setMessage("Customer account verified and recorded in the audit trail.");
+    } catch (e) {
+      setError(e.message);
+    }
+  }
+  return (
+    <Modal title="Transaction evidence" onClose={onClose}>
+      <JsonView value={row} />
+      {["admin", "reviewer"].includes(user.role) && (
+        <form onSubmit={verify}>
+          <h3>Verify customer account</h3>
+          <label>
+            Customer
+            <select
+              value={customer}
+              onChange={(e) => setCustomer(e.target.value)}
+              required
+            >
+              <option value="">Choose verified customer</option>
+              {customers.data?.items.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name} · {c.account}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Verification evidence
+            <textarea
+              required
+              minLength={5}
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+            />
+          </label>
+          <button>Record verified account</button>
+        </form>
+      )}
+      {error && <Notice error>{error}</Notice>}
+      {message && <Notice>{message}</Notice>}
+    </Modal>
+  );
 }

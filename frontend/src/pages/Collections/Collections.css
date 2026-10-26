@@ -1,1 +1,8 @@
-.draft-body{white-space:pre-wrap;font-size:16px;line-height:1.9;padding:22px;background:var(--paper);border-radius:12px}
+.draft-body {
+  white-space: pre-wrap;
+  font-size: 16px;
+  line-height: 1.9;
+  padding: 22px;
+  background: var(--paper);
+  border-radius: 12px;
+}

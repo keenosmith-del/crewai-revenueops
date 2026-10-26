@@ -2,6 +2,7 @@ import csv
 import io
 import json
 from datetime import date
+from decimal import Decimal
 from typing import Annotated
 
 from fastapi import (
@@ -241,10 +242,10 @@ def config(user=Depends(current_user)):
     }
 
 
-@router.get("/{resource}")
 def listing(
     resource: str,
     q: str = Query("", max_length=200),
+    customer_id: str = Query("", max_length=36),
     status: str = "",
     currency: str = "",
     page: int = Query(1, ge=1),
@@ -258,6 +259,34 @@ def listing(
     if not model:
         raise HTTPException(404, "Resource not found")
     records = [present(db, r) for r in rows(db, model, user.org_id)]
+    if customer_id:
+        get(db, Customer, customer_id, user.org_id)
+        account_invoices = {
+            i.id for i in rows(db, Invoice, user.org_id) if i.customer_id == customer_id
+        }
+        account_transactions = {
+            t.id for t in rows(db, Transaction, user.org_id) if t.customer_id == customer_id
+        }
+        account_cases = {
+            c.id
+            for c in rows(db, Investigation, user.org_id)
+            if c.transaction_id in account_transactions
+        }
+        record_ids = {customer_id} | account_invoices | account_transactions | account_cases
+        for child in (Draft, Dispute, Allocation):
+            record_ids |= {
+                r.id for r in rows(db, child, user.org_id) if r.invoice_id in account_invoices
+            }
+        records = [
+            r
+            for r in records
+            if r.get("customer_id") == customer_id
+            or r.get("invoice_id") in account_invoices
+            or r.get("transaction_id") in account_transactions
+            or r.get("investigation_id") in account_cases
+            or (model is Audit and r.get("record_id") in record_ids)
+        ]
+
     records = [
         r
         for r in records
@@ -266,7 +295,14 @@ def listing(
         and (not currency or r.get("currency") == currency)
     ]
     if sort and records and sort in records[0]:
-        records.sort(key=lambda r: str(r.get(sort) or ""), reverse=direction == "desc")
+        records.sort(
+            key=lambda r: (
+                Decimal(r.get(sort) or "0")
+                if sort in ("amount", "outstanding", "unallocated")
+                else str(r.get(sort) or "")
+            ),
+            reverse=direction == "desc",
+        )
     elif records and "created_at" in records[0]:
         records.sort(key=lambda r: r["created_at"], reverse=True)
     return {
@@ -277,7 +313,6 @@ def listing(
     }
 
 
-@router.get("/{resource}/{record_id}")
 def detail(resource: str, record_id: str, db=Depends(get_db), user=Depends(current_user)):
     model = MODELS.get(resource)
     if not model:
@@ -379,3 +414,8 @@ def evaluation_report(user=Depends(current_user)):
     if not target.exists():
         return {"status": "not_executed", "reason": "No evaluation artifact in this release"}
     return json.loads(target.read_text())
+
+
+# Keep scoped generic resources last so specific reports/integration paths remain reachable.
+router.add_api_route("/{resource}", listing, methods=["GET"])
+router.add_api_route("/{resource}/{record_id}", detail, methods=["GET"])

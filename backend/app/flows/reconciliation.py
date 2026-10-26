@@ -16,6 +16,7 @@ class ReconciliationState(BaseModel):
     completed_steps: list[str] = Field(default_factory=list)
     result: dict = Field(default_factory=dict)
     usage: dict = Field(default_factory=dict)
+    crew_id: str | None = None
 
 
 class ReconciliationFlow(Flow[ReconciliationState]):
@@ -61,6 +62,8 @@ class ReconciliationFlow(Flow[ReconciliationState]):
             record_call=self.record_call,
             task_callback=self.task_callback,
         )
+        self.state.crew_id = str(crew.id)
+        self.save("crew_started")
         output = crew.kickoff()
         self.state.usage = crew.usage_metrics.model_dump() if crew.usage_metrics else {}
         result = validate_findings(output.pydantic, self.context)

@@ -113,3 +113,30 @@ def test_collections_composition():
     crew = build_crew(CONTEXT, ContractLLM(model="mocked-contract-test"), collections=True)
     assert len(crew.agents) == 2
     assert crew.tasks[0].name == "collections"
+
+
+class UnavailableLLM(ContractLLM):
+    def call(self, messages, **kwargs):
+        raise ConnectionError("Synthetic model unavailable")
+
+
+def test_model_failure_never_produces_recommendation():
+    flow = ReconciliationFlow(context=CONTEXT, llm=UnavailableLLM(model="mocked-unavailable"))
+    with pytest.raises(Exception):
+        flow.kickoff()
+    assert flow.state.result == {}
+
+
+def test_actual_guardrail_rejects_fabricated_citation():
+    from crewai.tasks.task_output import TaskOutput
+
+    from app.agents.tasks.validation import guardrail
+
+    fabricated = {
+        **FINDING,
+        "evidence": [{"reference": "invoice:fake", "field": "amount", "value": "100"}],
+    }
+    outcome = guardrail(CONTEXT)(
+        TaskOutput(description="Synthetic invalid output", raw=json.dumps(fabricated), agent="mock")
+    )
+    assert outcome[0] is False

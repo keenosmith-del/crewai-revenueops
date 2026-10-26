@@ -10,8 +10,8 @@ unallocated and blocked. Totals are per currency; no consolidated mixed-currency
 Matching: bounded reference tokens, currency, customer, outstanding amount. Exact,
 partial, overpayment and explicit combined reference matches are proposals. A unique
 customer/amount match is lower confidence. Bounded 2–3 invoice combinations are
-candidates, never automatic allocations. Unknown customer blocks approval until
-verified records are imported; the current release has no customer reassignment API.
+candidates, never automatic allocations. Unknown customer blocks approval until a reviewer records a verified customer account
+through the audited transaction verification API. Allocated receipts cannot be reassigned.
 
 Imports validate the whole file before confirmation. SHA-256 plus mapping and unique
 source identifiers prevent reimport effects. Separate transactions with the same

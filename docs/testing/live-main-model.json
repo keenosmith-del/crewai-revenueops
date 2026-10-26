@@ -1,0 +1,13 @@
+{
+  "execution_id": "17fa564b-b22e-42fa-bd3d-164f1b111bea",
+  "mode": "ollama",
+  "model": "llama3.2:3b",
+  "status": "failed",
+  "stage": "failed",
+  "error": "ValidationError",
+  "duration_ms": 147763,
+  "usage": {},
+  "tool_calls": 23,
+  "result": {},
+  "no_ledger_mutations": true
+}

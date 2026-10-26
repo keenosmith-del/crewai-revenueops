@@ -57,3 +57,27 @@ latency on a MacBook Air. Do not mistake capability support for reliable large-c
 Optional hosted mode uses CrewAI native OpenAI provider, HOSTED_ENABLED=true and
 HOSTED_MODEL=openai/<approved-model>, with provider API key supplied outside Git.
 This is explicit operator activation for billable work; it was not enabled or tested here.
+
+## Isolated browser verification
+Never point financial write tests at the main demo or any production ledger. Create an
+independent disposable database, migrate and seed it, and use a separate signing key:
+```sh
+docker exec revenueops-db-1 createdb -U revenueops revenueops_browser_test
+cd backend
+export APP_ENV=test
+export DATABASE_URL=postgresql+psycopg://revenueops:local-only@localhost:55433/revenueops_browser_test
+export JWT_SECRET=synthetic-browser-test-only-secret-2026
+export CORS_ORIGINS='["http://127.0.0.1:5175"]'
+../.venv/bin/alembic upgrade head
+../.venv/bin/python -m app.db.seed
+../.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 5052
+```
+In another terminal:
+```sh
+cd frontend
+REVENUEOPS_API_URL=http://127.0.0.1:5052 npm run dev -- --port 5175
+```
+Then run npm --prefix frontend run test:e2e from the root. Tests require synthetic=true
+and environment=test before importing or approving any fixture allocation. The CI browser
+job similarly uses its own disposable PostgreSQL service. Stop these test services after
+verification; the normal demo remains on its separate database and ports.

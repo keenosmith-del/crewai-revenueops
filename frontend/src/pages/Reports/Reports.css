@@ -1,1 +1,8 @@
-.download-link{font-size:12px;padding:12px 16px;background:var(--ink);color:var(--surface);border-radius:9px;white-space:nowrap}
+.download-link {
+  font-size: 12px;
+  padding: 12px 16px;
+  background: var(--ink);
+  color: var(--surface);
+  border-radius: 9px;
+  white-space: nowrap;
+}

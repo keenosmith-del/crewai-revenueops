@@ -1,19 +1,61 @@
-import {BrowserRouter,Routes,Route,Navigate} from 'react-router-dom'
-import {AuthProvider,useAuth} from './context/Auth'
-import Shell from './layouts/Shell'
-import Dashboard from './pages/Dashboard/Dashboard'
-import Invoices from './pages/Invoices/Invoices'
-import InvoiceDetail from './pages/InvoiceDetail/InvoiceDetail'
-import Transactions from './pages/Transactions/Transactions'
-import Reconciliation from './pages/Reconciliation/Reconciliation'
-import Investigations from './pages/Investigations/Investigations'
-import AgentWorkspace from './pages/AgentWorkspace/AgentWorkspace'
-import Collections from './pages/Collections/Collections'
-import Reports from './pages/Reports/Reports'
-import Audit from './pages/Audit/Audit'
-import Settings from './pages/Settings/Settings'
-import Customers from './pages/Customers/Customers'
-import CustomerDetail from './pages/CustomerDetail/CustomerDetail'
-import SignIn from './pages/SignIn/SignIn'
-function Authenticated(){const {user,loading}=useAuth();if(loading)return <p className="empty" role="status">Opening workspace…</p>;if(!user)return <SignIn/>;return <><a className="skip-link" href="#main">Skip to main content</a><Routes><Route element={<Shell/>}><Route index element={<Dashboard/>}/><Route path="invoices" element={<Invoices/>}/><Route path="invoices/:id" element={<InvoiceDetail/>}/><Route path="transactions" element={<Transactions/>}/><Route path="reconciliation" element={<Reconciliation/>}/><Route path="investigations" element={<Investigations/>}/><Route path="agents" element={<AgentWorkspace/>}/><Route path="collections" element={<Collections/>}/><Route path="reports" element={<Reports/>}/><Route path="audit" element={<Audit/>}/><Route path="settings" element={<Settings/>}/><Route path="customers" element={<Customers/>}/><Route path="customers/:id" element={<CustomerDetail/>}/><Route path="*" element={<Navigate to="/" replace/>}/></Route></Routes></>}
-export default function App(){return <BrowserRouter><AuthProvider><Authenticated/></AuthProvider></BrowserRouter>}
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider, useAuth } from "./context/Auth";
+import Shell from "./layouts/Shell";
+import Dashboard from "./pages/Dashboard/Dashboard";
+import Invoices from "./pages/Invoices/Invoices";
+import InvoiceDetail from "./pages/InvoiceDetail/InvoiceDetail";
+import Transactions from "./pages/Transactions/Transactions";
+import Reconciliation from "./pages/Reconciliation/Reconciliation";
+import Investigations from "./pages/Investigations/Investigations";
+import AgentWorkspace from "./pages/AgentWorkspace/AgentWorkspace";
+import Collections from "./pages/Collections/Collections";
+import Reports from "./pages/Reports/Reports";
+import Audit from "./pages/Audit/Audit";
+import Settings from "./pages/Settings/Settings";
+import Customers from "./pages/Customers/Customers";
+import CustomerDetail from "./pages/CustomerDetail/CustomerDetail";
+import SignIn from "./pages/SignIn/SignIn";
+function Authenticated() {
+  const { user, loading } = useAuth();
+  if (loading)
+    return (
+      <p className="empty" role="status">
+        Opening workspace…
+      </p>
+    );
+  if (!user) return <SignIn />;
+  return (
+    <>
+      <a className="skip-link" href="#main">
+        Skip to main content
+      </a>
+      <Routes>
+        <Route element={<Shell />}>
+          <Route index element={<Dashboard />} />
+          <Route path="invoices" element={<Invoices />} />
+          <Route path="invoices/:id" element={<InvoiceDetail />} />
+          <Route path="transactions" element={<Transactions />} />
+          <Route path="reconciliation" element={<Reconciliation />} />
+          <Route path="investigations" element={<Investigations />} />
+          <Route path="agents" element={<AgentWorkspace />} />
+          <Route path="collections" element={<Collections />} />
+          <Route path="reports" element={<Reports />} />
+          <Route path="audit" element={<Audit />} />
+          <Route path="settings" element={<Settings />} />
+          <Route path="customers" element={<Customers />} />
+          <Route path="customers/:id" element={<CustomerDetail />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Route>
+      </Routes>
+    </>
+  );
+}
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <Authenticated />
+      </AuthProvider>
+    </BrowserRouter>
+  );
+}

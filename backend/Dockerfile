@@ -7,7 +7,7 @@ COPY backend/app/ ./app/
 COPY backend/alembic.ini ./
 COPY backend/migrations/ ./migrations/
 COPY data/ /srv/revenueops/data/
-COPY docs/testing/ /srv/revenueops/docs/testing/
+COPY docs/testing/*.json /srv/revenueops/docs/testing/
 RUN mkdir -p /srv/revenueops/.runtime && chown -R revenueops:revenueops /srv/revenueops
 USER revenueops
 EXPOSE 5050

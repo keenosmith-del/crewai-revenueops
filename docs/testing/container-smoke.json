@@ -1,0 +1,19 @@
+{
+  "verification": "production images running locally with synthetic records",
+  "web_http": 200,
+  "csp_present": true,
+  "database_health": "ok",
+  "anonymous_identity_http": 401,
+  "synthetic_identity": true,
+  "money_response_type": "decimal string",
+  "evaluation_route_http": 200,
+  "communications": "disabled",
+  "financial_writes_performed": false,
+  "services": [
+    "PostgreSQL",
+    "FastAPI",
+    "worker",
+    "production Nginx web"
+  ],
+  "model_mode": "baseline"
+}
