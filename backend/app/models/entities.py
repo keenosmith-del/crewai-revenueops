@@ -115,10 +115,7 @@ class Investigation(Scoped, Base):
 
 class Allocation(Scoped, Base):
     __tablename__ = "allocations"
-    __table_args__ = (
-        UniqueConstraint("org_id", "investigation_id", "invoice_id"),
-        CheckConstraint("amount > 0"),
-    )
+    __table_args__ = (CheckConstraint("amount > 0"),)
     transaction_id: Mapped[str] = mapped_column(ForeignKey("transactions.id"), index=True)
     invoice_id: Mapped[str] = mapped_column(ForeignKey("invoices.id"), index=True)
     investigation_id: Mapped[str] = mapped_column(ForeignKey("investigations.id"))
